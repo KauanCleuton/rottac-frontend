@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 dayjs.locale('pt-br');
 
-const NOTE_COLORS = ['#7B2FF7', '#3B82F6', '#22C55E', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
+const NOTE_COLORS = ['#F2B705', '#3B82F6', '#22C55E', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
 
 export default function AnotacoesPage() {
   const theme = useTheme();
@@ -27,7 +27,7 @@ export default function AnotacoesPage() {
   const [editNote, setEditNote] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [filterTag, setFilterTag] = useState('');
-  const [form, setForm] = useState({ title: '', content: '', tags: '', subjectId: '', color: '#7B2FF7' });
+  const [form, setForm] = useState({ title: '', content: '', tags: '', subjectId: '', color: '#F2B705' });
 
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['notes'],
@@ -87,10 +87,10 @@ export default function AnotacoesPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['notes'] }),
   });
 
-  const resetForm = () => setForm({ title: '', content: '', tags: '', subjectId: '', color: '#7B2FF7' });
+  const resetForm = () => setForm({ title: '', content: '', tags: '', subjectId: '', color: '#F2B705' });
 
   const openEdit = (note: any) => {
-    setForm({ title: note.title || '', content: note.content || '', tags: note.tags?.join(', ') || '', subjectId: note.subjectId || '', color: note.color || '#7B2FF7' });
+    setForm({ title: note.title || '', content: note.content || '', tags: note.tags?.join(', ') || '', subjectId: note.subjectId || '', color: note.color || '#F2B705' });
     setEditNote(note);
   };
 
@@ -154,10 +154,10 @@ export default function AnotacoesPage() {
           {filtered.map((note: any) => (
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={note.id}>
               <Card sx={{
-                borderTop: `4px solid ${note.color || '#7B2FF7'}`,
+                borderTop: `4px solid ${note.color || '#F2B705'}`,
                 height: '100%',
                 transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': { transform: 'translateY(-2px)', boxShadow: `0 8px 24px ${alpha(note.color || '#7B2FF7', 0.2)}` },
+                '&:hover': { transform: 'translateY(-2px)', boxShadow: `0 8px 24px ${alpha(note.color || '#F2B705', 0.2)}` },
               }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -184,7 +184,7 @@ export default function AnotacoesPage() {
                     <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
                       {note.tags.map((tag: string) => (
                         <Chip key={tag} label={tag} size="small"
-                          sx={{ height: 18, fontSize: 10, bgcolor: alpha(note.color || '#7B2FF7', 0.1), color: note.color || 'text.secondary' }} />
+                          sx={{ height: 18, fontSize: 10, bgcolor: alpha(note.color || '#F2B705', 0.1), color: note.color || 'text.secondary' }} />
                       ))}
                     </Box>
                   )}

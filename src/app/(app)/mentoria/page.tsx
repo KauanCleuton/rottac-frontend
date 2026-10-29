@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { useState, useRef, useEffect } from 'react';
-import { BRAND_GRADIENT } from '@/theme';
+import { BRAND_GRADIENT, HERO_GRADIENT } from '@/theme';
 import { useAuthStore } from '@/store/auth.store';
 
 dayjs.locale('pt-br');
@@ -151,7 +151,7 @@ export default function MentoriaPage() {
         </Box>
 
         {/* Hero */}
-        <Card sx={{ mb: 3, background: BRAND_GRADIENT, color: '#fff' }}>
+        <Card sx={{ mb: 3, background: HERO_GRADIENT, color: '#fff', border: '1px solid rgba(242,183,5,0.25)' }}>
           <CardContent sx={{ py: 4 }}>
             <Grid container spacing={3} alignItems="center">
               <Grid size={{ xs: 12, md: 8 }}>
@@ -191,7 +191,7 @@ export default function MentoriaPage() {
         ) : mentors.length === 0 ? (
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
-              <Person sx={{ fontSize: 64, color: alpha('#6C63FF', 0.3), mb: 2 }} />
+              <Person sx={{ fontSize: 64, color: alpha('#F2B705', 0.3), mb: 2 }} />
               <Typography variant="h6" color="text.secondary">Nenhum mentor disponível no momento</Typography>
               <Typography color="text.secondary" variant="body2" sx={{ mt: 1 }}>
                 Seja o primeiro mentor da plataforma!
@@ -214,7 +214,7 @@ export default function MentoriaPage() {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                       <Avatar
                         src={mentor.user?.avatar}
-                        sx={{ width: 52, height: 52, bgcolor: '#6C63FF', fontSize: 20 }}
+                        sx={{ width: 52, height: 52, bgcolor: '#F2B705', fontSize: 20 }}
                       >
                         {mentor.user?.name?.[0]}
                       </Avatar>
@@ -320,12 +320,12 @@ export default function MentoriaPage() {
       </Box>
 
       {/* Mentor card */}
-      <Card sx={{ mb: 3, background: `linear-gradient(135deg, ${alpha('#6C63FF', 0.08)}, ${alpha('#00C2FF', 0.05)})`, border: `1px solid ${alpha('#6C63FF', 0.2)}` }}>
+      <Card sx={{ mb: 3, background: `linear-gradient(135deg, ${alpha('#F2B705', 0.08)}, ${alpha('#FFD34D', 0.05)})`, border: `1px solid ${alpha('#F2B705', 0.2)}` }}>
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Avatar
               src={mentor?.user?.avatar}
-              sx={{ width: 64, height: 64, bgcolor: '#6C63FF', fontSize: 24 }}
+              sx={{ width: 64, height: 64, bgcolor: '#F2B705', fontSize: 24 }}
             >
               {mentor?.user?.name?.[0]}
             </Avatar>
@@ -369,7 +369,7 @@ export default function MentoriaPage() {
             >
               {messages.length === 0 ? (
                 <Box sx={{ textAlign: 'center', mt: 8 }}>
-                  <Chat sx={{ fontSize: 48, color: alpha('#6C63FF', 0.3), mb: 2 }} />
+                  <Chat sx={{ fontSize: 48, color: alpha('#F2B705', 0.3), mb: 2 }} />
                   <Typography color="text.secondary">
                     Nenhuma mensagem ainda. Inicie a conversa com seu mentor!
                   </Typography>
@@ -387,7 +387,7 @@ export default function MentoriaPage() {
                       }}
                     >
                       {!isMe && (
-                        <Avatar src={msg.sender?.avatar} sx={{ width: 32, height: 32, bgcolor: '#6C63FF', fontSize: 12 }}>
+                        <Avatar src={msg.sender?.avatar} sx={{ width: 32, height: 32, bgcolor: '#F2B705', fontSize: 12 }}>
                           {msg.sender?.name?.[0]}
                         </Avatar>
                       )}
@@ -397,9 +397,9 @@ export default function MentoriaPage() {
                           p: 1.5,
                           borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                           bgcolor: isMe
-                            ? '#6C63FF'
+                            ? '#F2B705'
                             : alpha(theme.palette.divider, 0.5),
-                          color: isMe ? '#fff' : 'text.primary',
+                          color: isMe ? '#0A0A0B' : 'text.primary',
                         }}
                       >
                         <Typography variant="body2">{msg.content}</Typography>
@@ -440,7 +440,7 @@ export default function MentoriaPage() {
                 color="primary"
                 onClick={() => sendMessage.mutate()}
                 disabled={!message.trim() || sendMessage.isPending}
-                sx={{ bgcolor: alpha('#6C63FF', 0.1), '&:hover': { bgcolor: alpha('#6C63FF', 0.2) } }}
+                sx={{ bgcolor: alpha('#F2B705', 0.1), '&:hover': { bgcolor: alpha('#F2B705', 0.2) } }}
               >
                 <Send />
               </IconButton>
@@ -463,7 +463,7 @@ export default function MentoriaPage() {
           {sessions.length === 0 ? (
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                <CalendarMonth sx={{ fontSize: 48, color: alpha('#6C63FF', 0.3), mb: 2 }} />
+                <CalendarMonth sx={{ fontSize: 48, color: alpha('#F2B705', 0.3), mb: 2 }} />
                 <Typography color="text.secondary">Nenhuma sessão agendada ainda</Typography>
               </CardContent>
             </Card>
@@ -483,7 +483,7 @@ export default function MentoriaPage() {
                           sx={{
                             bgcolor: alpha(
                               s.status === 'REALIZADA' ? '#10B981' :
-                              s.status === 'CANCELADA' ? '#EF4444' : '#6C63FF', 0.1
+                              s.status === 'CANCELADA' ? '#EF4444' : '#F2B705', 0.1
                             ),
                             fontSize: 11,
                           }}
@@ -522,7 +522,7 @@ export default function MentoriaPage() {
           {(myMentoring.plans || []).length === 0 ? (
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                <Assignment sx={{ fontSize: 48, color: alpha('#6C63FF', 0.3), mb: 2 }} />
+                <Assignment sx={{ fontSize: 48, color: alpha('#F2B705', 0.3), mb: 2 }} />
                 <Typography color="text.secondary">
                   Seu mentor ainda não criou um plano semanal para você.
                 </Typography>
@@ -542,7 +542,7 @@ export default function MentoriaPage() {
                           <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>Metas da semana</Typography>
                           {(p.goals || []).map((g: string, i: number) => (
                             <Box key={i} sx={{ display: 'flex', gap: 1, mb: 0.5 }}>
-                              <FiberManualRecord sx={{ fontSize: 8, mt: 0.8, color: '#6C63FF', flexShrink: 0 }} />
+                              <FiberManualRecord sx={{ fontSize: 8, mt: 0.8, color: '#F2B705', flexShrink: 0 }} />
                               <Typography variant="body2">{g}</Typography>
                             </Box>
                           ))}

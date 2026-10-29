@@ -101,8 +101,11 @@ export default function FlashcardImportPage() {
   };
 
   const addPair = () => {
+    // O par novo ainda não está em `pairs` neste render: abre a edição já com os campos vazios
     setPairs(prev => [...prev, { front: '', back: '' }]);
-    startEdit(pairs.length);
+    setEditIdx(pairs.length);
+    setEditFront('');
+    setEditBack('');
   };
 
   return (
@@ -137,22 +140,22 @@ export default function FlashcardImportPage() {
                   onDragLeave={() => setIsDragging(false)}
                   onClick={() => fileInputRef.current?.click()}
                   sx={{
-                    border: `3px dashed ${alpha(isDragging ? '#6C63FF' : theme.palette.divider, isDragging ? 0.8 : 0.5)}`,
+                    border: `3px dashed ${alpha(isDragging ? '#F2B705' : theme.palette.divider, isDragging ? 0.8 : 0.5)}`,
                     borderRadius: 3,
                     p: { xs: 4, md: 8 },
                     textAlign: 'center',
                     cursor: previewMutation.isPending ? 'default' : 'pointer',
-                    bgcolor: isDragging ? alpha('#6C63FF', 0.05) : 'transparent',
+                    bgcolor: isDragging ? alpha('#F2B705', 0.05) : 'transparent',
                     transition: 'all 0.2s',
                     '&:hover': previewMutation.isPending ? {} : {
-                      bgcolor: alpha('#6C63FF', 0.04),
-                      borderColor: alpha('#6C63FF', 0.5),
+                      bgcolor: alpha('#F2B705', 0.04),
+                      borderColor: alpha('#F2B705', 0.5),
                     },
                   }}
                 >
                   {previewMutation.isPending ? (
                     <>
-                      <CircularProgress size={56} sx={{ mb: 2, color: '#6C63FF' }} />
+                      <CircularProgress size={56} sx={{ mb: 2, color: '#F2B705' }} />
                       <Typography variant="h6" fontWeight={600}>Extraindo flashcards...</Typography>
                       <Typography color="text.secondary" sx={{ mt: 1 }}>
                         Analisando pares pergunta/resposta no PDF
@@ -160,7 +163,7 @@ export default function FlashcardImportPage() {
                     </>
                   ) : (
                     <>
-                      <FlashOn sx={{ fontSize: 72, color: alpha('#6C63FF', 0.4), mb: 2 }} />
+                      <FlashOn sx={{ fontSize: 72, color: alpha('#F2B705', 0.4), mb: 2 }} />
                       <Typography variant="h6" fontWeight={700}>
                         Arraste o PDF de flashcards aqui
                       </Typography>
@@ -192,7 +195,7 @@ export default function FlashcardImportPage() {
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <Info sx={{ color: '#6C63FF' }} />
+                  <Info sx={{ color: '#F2B705' }} />
                   <Typography variant="h6" fontWeight={700}>Formatos suportados</Typography>
                 </Box>
                 {[

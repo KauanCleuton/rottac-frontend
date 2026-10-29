@@ -24,12 +24,12 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   UNDER_REVIEW:      { label: 'Em revisão', color: '#3B82F6' },
   CORRECTED:         { label: 'Corrigida', color: '#22C55E' },
   REWRITE_REQUESTED: { label: 'Reescrita solicitada', color: '#EF4444' },
-  REWRITTEN:         { label: 'Reescrita enviada', color: '#8B5CF6' },
+  REWRITTEN:         { label: 'Reescrita enviada', color: '#D4A017' },
 };
 
 const COMMENT_TYPE_COLORS: Record<string, string> = {
   GRAMMAR: '#EF4444', COHESION: '#F59E0B', ARGUMENT: '#3B82F6',
-  SUGGESTION: '#8B5CF6', PRAISE: '#22C55E', ANNOTATION: '#9CA3AF',
+  SUGGESTION: '#D4A017', PRAISE: '#22C55E', ANNOTATION: '#9CA3AF',
 };
 const COMMENT_TYPE_LABELS: Record<string, string> = {
   GRAMMAR: 'Gramática', COHESION: 'Coesão', ARGUMENT: 'Argumento',

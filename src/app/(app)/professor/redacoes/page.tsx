@@ -20,7 +20,7 @@ const STATUS_OPTS = [
   { value: 'CORRECTED', label: 'Corrigidas' },
 ];
 const STATUS_COLORS: Record<string, string> = {
-  PENDING: '#F59E0B', REWRITTEN: '#8B5CF6', CORRECTED: '#22C55E', REWRITE_REQUESTED: '#EF4444',
+  PENDING: '#F59E0B', REWRITTEN: '#D4A017', CORRECTED: '#22C55E', REWRITE_REQUESTED: '#EF4444',
 };
 
 export default function ProfessorEssaysPage() {

@@ -24,8 +24,8 @@ import { BRAND_GRADIENT } from '@/theme';
 dayjs.locale('pt-br');
 
 const TASK_TYPE_COLORS: Record<string, string> = {
-  LEITURA: '#6C63FF', REVISAO: '#FF6584', EXERCICIOS: '#00C896',
-  VIDEO: '#FFB547', RESUMO: '#3B82F6', FLASHCARDS: '#8B5CF6', SIMULADO: '#EF4444',
+  LEITURA: '#F2B705', REVISAO: '#FF6584', EXERCICIOS: '#00C896',
+  VIDEO: '#FFB547', RESUMO: '#3B82F6', FLASHCARDS: '#D4A017', SIMULADO: '#EF4444',
 };
 const TASK_TYPE_LABEL: Record<string, string> = {
   LEITURA: 'Leitura', REVISAO: 'Revisão', EXERCICIOS: 'Exercícios',
@@ -190,7 +190,7 @@ export default function DashboardPage() {
             {[
               { label: 'Progresso Hoje', value: `${summary.progressPercent || 0}%`, sub: `${summary.completed || 0}/${summary.total || 0} tarefas`, color: theme.palette.primary.main, icon: <TrendingUp /> },
               { label: 'Streak', value: `${dashData?.gamification?.streak || 0}d`, sub: `Melhor: ${dashData?.gamification?.bestStreak || 0}d`, color: '#FF6B35', icon: <LocalFireDepartment /> },
-              { label: 'XP Total', value: dashData?.gamification?.xp || 0, sub: `Nível ${dashData?.gamification?.level || 1}`, color: '#8B5CF6', icon: <Bolt /> },
+              { label: 'XP Total', value: dashData?.gamification?.xp || 0, sub: `Nível ${dashData?.gamification?.level || 1}`, color: '#D4A017', icon: <Bolt /> },
               { label: 'Flashcards', value: flashDueCount, sub: 'para revisar hoje', color: flashDueCount > 10 ? '#EF4444' : '#22C55E', icon: <FlashOn /> },
               { label: 'Erros p/ revisar', value: errorsDueCount, sub: 'caderno de erros', color: errorsDueCount > 5 ? '#F59E0B' : '#22C55E', icon: <MenuBook /> },
             ].map((stat) => (
@@ -217,12 +217,12 @@ export default function DashboardPage() {
         {/* ── Revisão Express ── */}
         {revisaoTotal > 0 && (
           <Grid size={12}>
-            <Card sx={{ border: `1px solid ${alpha('#7B2FF7', 0.2)}`,
-              background: `linear-gradient(135deg, ${alpha('#7B2FF7', 0.04)}, transparent)` }}>
+            <Card sx={{ border: `1px solid ${alpha('#F2B705', 0.2)}`,
+              background: `linear-gradient(135deg, ${alpha('#F2B705', 0.04)}, transparent)` }}>
               <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                    <AutoAwesome sx={{ color: '#7B2FF7' }} />
+                    <AutoAwesome sx={{ color: '#F2B705' }} />
                     <Box>
                       <Typography variant="subtitle1" fontWeight={700}>Revisão Express</Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -235,8 +235,8 @@ export default function DashboardPage() {
                   {flashDueCount > 0 && (
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <Paper elevation={0} sx={{ p: 1.5, borderRadius: 2,
-                        border: `1px solid ${alpha('#8B5CF6', 0.2)}`,
-                        bgcolor: alpha('#8B5CF6', 0.04),
+                        border: `1px solid ${alpha('#D4A017', 0.2)}`,
+                        bgcolor: alpha('#D4A017', 0.04),
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
                           <Typography fontSize={24}>⚡</Typography>
@@ -246,7 +246,7 @@ export default function DashboardPage() {
                           </Box>
                         </Box>
                         <Button component={Link} href="/flashcards" variant="contained" size="small"
-                          sx={{ bgcolor: '#8B5CF6', '&:hover': { bgcolor: '#7C3AED' } }}>
+                          sx={{ bgcolor: '#D4A017', '&:hover': { bgcolor: '#7C3AED' } }}>
                           Revisar
                         </Button>
                       </Paper>
@@ -285,8 +285,8 @@ export default function DashboardPage() {
               <Typography variant="subtitle1" fontWeight={700} gutterBottom>Ações Rápidas</Typography>
               <Grid container spacing={1}>
                 {[
-                  { label: 'Modo Foco', icon: <SelfImprovement />, href: '/foco', color: '#7B2FF7' },
-                  { label: 'Flashcards', icon: <FlashOn />, href: '/flashcards', color: '#8B5CF6' },
+                  { label: 'Modo Foco', icon: <SelfImprovement />, href: '/foco', color: '#F2B705' },
+                  { label: 'Flashcards', icon: <FlashOn />, href: '/flashcards', color: '#D4A017' },
                   { label: 'Simulado', icon: <QuestionAnswer />, href: '/simulado', color: '#EF4444' },
                   { label: 'Registrar Questões', icon: <Add />, href: '/questoes', color: '#22C55E' },
                   { label: 'Caderno de Erros', icon: <MenuBook />, href: '/caderno-erros', color: '#F59E0B' },
@@ -387,9 +387,9 @@ export default function DashboardPage() {
               ) : (
                 <List disablePadding>
                   {[...pending, ...completed].map((task: any, idx: number) => {
-                    const subjectColor = task.topic?.module?.subject?.color || '#6C63FF';
+                    const subjectColor = task.topic?.module?.subject?.color || '#F2B705';
                     const subjectName = task.topic?.module?.subject?.name;
-                    const typeColor = TASK_TYPE_COLORS[task.type] || '#6C63FF';
+                    const typeColor = TASK_TYPE_COLORS[task.type] || '#F2B705';
 
                     return (
                       <Box key={task.id}>
@@ -419,6 +419,7 @@ export default function DashboardPage() {
                                 {task.title}
                               </Typography>
                             }
+                            secondaryTypographyProps={{ component: 'div' }}
                             secondary={
                               <Box sx={{ display: 'flex', gap: 0.75, mt: 0.5, flexWrap: 'wrap' }}>
                                 {subjectName && (

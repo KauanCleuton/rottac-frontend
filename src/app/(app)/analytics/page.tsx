@@ -142,8 +142,8 @@ export default function AnalyticsPage() {
             sub="Para revisar" color="#EF4444" />
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <StatCard icon={<FlashOn sx={{ color: '#8B5CF6' }} />} label="Flashcards Atrasados" value={dashboard?.flashcardsDue || 0}
-            sub="Para revisar hoje" color="#8B5CF6" />
+          <StatCard icon={<FlashOn sx={{ color: '#D4A017' }} />} label="Flashcards Atrasados" value={dashboard?.flashcardsDue || 0}
+            sub="Para revisar hoje" color="#D4A017" />
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
           <StatCard icon={<EmojiEvents color="primary" />} label="Nível" value={`Nível ${gami?.level || 1}`}
@@ -176,8 +176,8 @@ export default function AnalyticsPage() {
               <Tooltip formatter={(v: any) => [`${v}h`, 'Horas']}
                 contentStyle={{ borderRadius: 8, background: theme.palette.background.paper,
                   border: `1px solid ${theme.palette.divider}` }} />
-              <Line type="monotone" dataKey="horas" stroke="#7B2FF7" strokeWidth={2.5}
-                dot={false} activeDot={{ r: 6, fill: '#7B2FF7' }} />
+              <Line type="monotone" dataKey="horas" stroke="#F2B705" strokeWidth={2.5}
+                dot={false} activeDot={{ r: 6, fill: '#F2B705' }} />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
@@ -194,19 +194,19 @@ export default function AnalyticsPage() {
                   <RadarChart data={radarData}>
                     <PolarGrid stroke={alpha(theme.palette.divider, 0.5)} />
                     <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11 }} />
-                    <Radar name="Progresso" dataKey="progresso" stroke="#7B2FF7" fill="#7B2FF7" fillOpacity={0.25} />
-                    <Radar name="Precisão" dataKey="precisao" stroke="#00C2FF" fill="#00C2FF" fillOpacity={0.15} />
+                    <Radar name="Progresso" dataKey="progresso" stroke="#F2B705" fill="#F2B705" fillOpacity={0.25} />
+                    <Radar name="Precisão" dataKey="precisao" stroke="#FFD34D" fill="#FFD34D" fillOpacity={0.15} />
                     <Tooltip contentStyle={{ borderRadius: 8, background: theme.palette.background.paper,
                       border: `1px solid ${theme.palette.divider}` }} />
                   </RadarChart>
                 </ResponsiveContainer>
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 1 }}>
                   <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
-                    <Box sx={{ width: 12, height: 3, borderRadius: 2, bgcolor: '#7B2FF7' }} />
+                    <Box sx={{ width: 12, height: 3, borderRadius: 2, bgcolor: '#F2B705' }} />
                     <Typography variant="caption">Progresso (%)</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
-                    <Box sx={{ width: 12, height: 3, borderRadius: 2, bgcolor: '#00C2FF' }} />
+                    <Box sx={{ width: 12, height: 3, borderRadius: 2, bgcolor: '#FFD34D' }} />
                     <Typography variant="caption">Precisão questões (%)</Typography>
                   </Box>
                 </Box>

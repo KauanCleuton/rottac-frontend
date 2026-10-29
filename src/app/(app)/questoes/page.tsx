@@ -256,7 +256,7 @@ export default function QuestoesPage() {
           </Button>
           <Tooltip title="Modo rápido com atalhos de teclado">
             <Button variant="outlined" startIcon={<Keyboard />} onClick={() => setRapidoOpen(true)}
-              sx={{ borderColor: '#7B2FF7', color: '#7B2FF7', '&:hover': { bgcolor: alpha('#7B2FF7', 0.06) } }}>
+              sx={{ borderColor: '#F2B705', color: '#F2B705', '&:hover': { bgcolor: alpha('#F2B705', 0.06) } }}>
               Modo Rápido
             </Button>
           </Tooltip>
@@ -275,7 +275,7 @@ export default function QuestoesPage() {
       {tab === 0 && (
         <Grid container spacing={2}>
           {[
-            { label: 'Total', value: stats?.total || 0, color: '#7B2FF7', icon: <QuestionAnswer /> },
+            { label: 'Total', value: stats?.total || 0, color: '#F2B705', icon: <QuestionAnswer /> },
             { label: 'Acertos', value: stats?.correct || 0, color: '#22C55E', icon: <CheckCircle /> },
             { label: 'Erros', value: stats?.incorrect || 0, color: '#EF4444', icon: <Cancel /> },
             { label: 'Taxa Geral', value: `${stats?.accuracy || 0}%`, color: '#3B82F6', icon: <TrendingUp /> },
@@ -313,7 +313,7 @@ export default function QuestoesPage() {
                         <Box key={s.id}>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.75, alignItems: 'center' }}>
                             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                              <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: s.color || '#7B2FF7', flexShrink: 0 }} />
+                              <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: s.color || '#F2B705', flexShrink: 0 }} />
                               <Typography variant="body2" fontWeight={600}>{s.name}</Typography>
                               <Chip label={`${Number(s.total)} questões`} size="small" sx={{ height: 18, fontSize: 9 }} />
                             </Box>

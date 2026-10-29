@@ -27,7 +27,7 @@ const COMMENT_TYPES = [
   { value: 'GRAMMAR',    label: 'Gramática',   color: '#EF4444' },
   { value: 'COHESION',   label: 'Coesão',      color: '#F59E0B' },
   { value: 'ARGUMENT',   label: 'Argumento',   color: '#3B82F6' },
-  { value: 'SUGGESTION', label: 'Sugestão',    color: '#8B5CF6' },
+  { value: 'SUGGESTION', label: 'Sugestão',    color: '#D4A017' },
   { value: 'PRAISE',     label: 'Elogio',      color: '#22C55E' },
   { value: 'ANNOTATION', label: 'Anotação',    color: '#9CA3AF' },
 ];
@@ -198,7 +198,7 @@ export default function CorrigirRedacaoPage() {
           </Button>
           <Button variant="contained" startIcon={<Save />} sx={{ background: BRAND_GRADIENT }}
             onClick={() => correctMutation.mutate()} disabled={correctMutation.isPending}>
-            {correctMutation.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : 'Salvar correção'}
+            {correctMutation.isPending ? <CircularProgress size={20} color="inherit" /> : 'Salvar correção'}
           </Button>
         </Box>
       </Box>
@@ -234,7 +234,7 @@ export default function CorrigirRedacaoPage() {
                     </Typography>
                     <Tooltip title="Selecione um trecho e clique para comentar">
                       <Chip label="Selecione para comentar" size="small" icon={<Add />}
-                        sx={{ bgcolor: alpha('#7B2FF7', 0.1), color: '#7B2FF7', cursor: 'help' }} />
+                        sx={{ bgcolor: alpha('#F2B705', 0.1), color: '#F2B705', cursor: 'help' }} />
                     </Tooltip>
                   </Box>
                   <Divider sx={{ mb: 2 }} />
@@ -295,7 +295,7 @@ export default function CorrigirRedacaoPage() {
           <Card sx={{ mb: 2 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Psychology sx={{ color: '#7B2FF7' }} />
+                <Psychology sx={{ color: '#F2B705' }} />
                 <Typography variant="subtitle1" fontWeight={700}>Notas por Competência</Typography>
                 <Box sx={{ ml: 'auto', textAlign: 'center' }}>
                   <Typography variant="h5" fontWeight={900} color={scoreColor}>{totalScore}</Typography>
@@ -383,8 +383,8 @@ export default function CorrigirRedacaoPage() {
         <DialogTitle>Adicionar anotação</DialogTitle>
         <DialogContent>
           {selection?.text && (
-            <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2, bgcolor: alpha('#7B2FF7', 0.06),
-              border: `1px solid ${alpha('#7B2FF7', 0.2)}` }}>
+            <Paper elevation={0} sx={{ p: 1.5, mb: 2, borderRadius: 2, bgcolor: alpha('#F2B705', 0.06),
+              border: `1px solid ${alpha('#F2B705', 0.2)}` }}>
               <Typography variant="caption" color="text.secondary">Trecho selecionado:</Typography>
               <Typography variant="body2" fontStyle="italic">"{selection.text}"</Typography>
             </Paper>

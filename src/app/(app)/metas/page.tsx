@@ -19,7 +19,7 @@ import 'dayjs/locale/pt-br';
 dayjs.locale('pt-br');
 
 const GOAL_TYPES = [
-  { value: 'TEMPO', label: 'Horas de Estudo', icon: '⏱️', unit: 'horas', color: '#7B2FF7' },
+  { value: 'TEMPO', label: 'Horas de Estudo', icon: '⏱️', unit: 'horas', color: '#F2B705' },
   { value: 'QUESTOES', label: 'Questões Resolvidas', icon: '📝', unit: 'questões', color: '#3B82F6' },
   { value: 'TOPICOS', label: 'Tópicos Concluídos', icon: '📚', unit: 'tópicos', color: '#22C55E' },
   { value: 'REVISOES', label: 'Revisões Feitas', icon: '🔄', unit: 'revisões', color: '#F59E0B' },

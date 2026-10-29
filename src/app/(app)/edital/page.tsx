@@ -168,16 +168,16 @@ export default function EditalPage() {
                       onDragOver={(e) => e.preventDefault()}
                       onClick={() => fileInputRef.current?.click()}
                       sx={{
-                        border: `2px dashed ${alpha('#6C63FF', 0.4)}`,
+                        border: `2px dashed ${alpha('#F2B705', 0.4)}`,
                         borderRadius: 3,
                         p: 6,
                         textAlign: 'center',
                         cursor: 'pointer',
-                        bgcolor: alpha('#6C63FF', 0.03),
+                        bgcolor: alpha('#F2B705', 0.03),
                         transition: 'all 0.2s',
                         '&:hover': {
-                          bgcolor: alpha('#6C63FF', 0.08),
-                          borderColor: '#6C63FF',
+                          bgcolor: alpha('#F2B705', 0.08),
+                          borderColor: '#F2B705',
                         },
                       }}
                     >
@@ -188,7 +188,7 @@ export default function EditalPage() {
                         </>
                       ) : (
                         <>
-                          <UploadFile sx={{ fontSize: 56, color: alpha('#6C63FF', 0.5), mb: 2 }} />
+                          <UploadFile sx={{ fontSize: 56, color: alpha('#F2B705', 0.5), mb: 2 }} />
                           <Typography variant="h6" fontWeight={600}>
                             Arraste o PDF do edital aqui
                           </Typography>
@@ -271,13 +271,13 @@ export default function EditalPage() {
                       <Accordion key={idx} sx={{ mb: 1, border: `1px solid ${alpha(theme.palette.divider, 0.5)}`, boxShadow: 'none' }}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', pr: 2 }}>
-                            <School sx={{ color: '#6C63FF', fontSize: 20 }} />
+                            <School sx={{ color: '#F2B705', fontSize: 20 }} />
                             <Typography fontWeight={600} sx={{ flex: 1 }}>{s.name}</Typography>
                             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                               <Chip
                                 label={`Peso ${s.weight.toFixed(1)}`}
                                 size="small"
-                                sx={{ bgcolor: alpha('#6C63FF', 0.1) }}
+                                sx={{ bgcolor: alpha('#F2B705', 0.1) }}
                               />
                               {s.confidence !== undefined && (
                                 <Chip
@@ -319,7 +319,7 @@ export default function EditalPage() {
                             step={0.5}
                             marks
                             valueLabelDisplay="auto"
-                            sx={{ mb: 2, color: '#6C63FF' }}
+                            sx={{ mb: 2, color: '#F2B705' }}
                           />
 
                           {/* Tópicos */}
@@ -425,7 +425,7 @@ export default function EditalPage() {
           <Card sx={{ mb: 2 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Info sx={{ color: '#6C63FF' }} />
+                <Info sx={{ color: '#F2B705' }} />
                 <Typography variant="h6" fontWeight={700}>Como funciona</Typography>
               </Box>
               {[
@@ -468,6 +468,7 @@ export default function EditalPage() {
                     >
                       <ListItemText
                         primary={imp.contestName || imp.fileName}
+                        secondaryTypographyProps={{ component: 'div' }}
                         secondary={
                           <Box sx={{ display: 'flex', gap: 1, mt: 0.5, alignItems: 'center', flexWrap: 'wrap' }}>
                             <Chip
@@ -478,7 +479,7 @@ export default function EditalPage() {
                                 bgcolor: alpha(
                                   imp.status === 'CONFIRMADO' ? '#10B981' :
                                   imp.status === 'ERRO' ? '#EF4444' :
-                                  imp.status === 'PROCESSANDO' ? '#F59E0B' : '#6C63FF',
+                                  imp.status === 'PROCESSANDO' ? '#F59E0B' : '#F2B705',
                                   0.15
                                 ),
                               }}

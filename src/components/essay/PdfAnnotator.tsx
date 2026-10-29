@@ -45,7 +45,7 @@ interface Props {
   readOnly?: boolean;
 }
 
-const COLORS = ['#EF4444', '#3B82F6', '#22C55E', '#F59E0B', '#8B5CF6', '#000000'];
+const COLORS = ['#EF4444', '#3B82F6', '#22C55E', '#F59E0B', '#D4A017', '#000000'];
 
 // Resolve URL relativa (/uploads/...) para URL absoluta do backend
 const resolveUrl = (url: string) => {
@@ -295,19 +295,19 @@ export default function PdfAnnotator({ pdfUrl, savedAnnotations, onSave, readOnl
           <ButtonGroup size="small">
             <Tooltip title="Caneta">
               <IconButton size="small" onClick={() => setTool('pen')}
-                sx={{ bgcolor: tool === 'pen' ? alpha('#7B2FF7', 0.15) : undefined }}>
+                sx={{ bgcolor: tool === 'pen' ? alpha('#F2B705', 0.15) : undefined }}>
                 <PenIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Borracha">
               <IconButton size="small" onClick={() => setTool('eraser')}
-                sx={{ bgcolor: tool === 'eraser' ? alpha('#7B2FF7', 0.15) : undefined }}>
+                sx={{ bgcolor: tool === 'eraser' ? alpha('#F2B705', 0.15) : undefined }}>
                 <EraserIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Círculo / Marcação">
               <IconButton size="small" onClick={() => setTool('circle')}
-                sx={{ bgcolor: tool === 'circle' ? alpha('#7B2FF7', 0.15) : undefined }}>
+                sx={{ bgcolor: tool === 'circle' ? alpha('#F2B705', 0.15) : undefined }}>
                 <Circle fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -358,9 +358,9 @@ export default function PdfAnnotator({ pdfUrl, savedAnnotations, onSave, readOnl
             </IconButton>
           </Tooltip>
           {onSave && (
-            <Button size="small" variant="contained" startIcon={saving ? <CircularProgress size={14} sx={{ color: '#fff' }} /> : <Save />}
+            <Button size="small" variant="contained" startIcon={saving ? <CircularProgress size={14} color="inherit" /> : <Save />}
               onClick={handleSave} disabled={saving}
-              sx={{ background: 'linear-gradient(135deg,#7B2FF7,#00C2FF)', fontWeight: 700, fontSize: 12 }}>
+              sx={{ background: 'linear-gradient(135deg,#F2B705,#FFD34D)', fontWeight: 700, fontSize: 12 }}>
               Salvar anotações
             </Button>
           )}
@@ -411,7 +411,7 @@ export default function PdfAnnotator({ pdfUrl, savedAnnotations, onSave, readOnl
                 <Typography color="error" mb={1}>Erro ao carregar PDF</Typography>
                 <Typography variant="caption" color="text.secondary">Verifique o console para detalhes</Typography>
                 <Box mt={1}>
-                  <a href={resolvedUrl} target="_blank" rel="noreferrer" style={{ color: '#7B2FF7', fontSize: 13 }}>
+                  <a href={resolvedUrl} target="_blank" rel="noreferrer" style={{ color: '#F2B705', fontSize: 13 }}>
                     Abrir PDF diretamente ↗
                   </a>
                 </Box>

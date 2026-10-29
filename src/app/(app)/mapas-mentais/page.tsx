@@ -29,7 +29,7 @@ export default function MindMapsPage() {
     mutationFn: () => mindMapApi.create({
       title,
       data: {
-        nodes: [{ id: 'root_1', type: 'mindNode', position: { x: 400, y: 200 }, data: { label: title, isRoot: true, color: '#7B2FF7' } }],
+        nodes: [{ id: 'root_1', type: 'mindNode', position: { x: 400, y: 200 }, data: { label: title, isRoot: true, color: '#F2B705' } }],
         edges: [],
       },
     }),

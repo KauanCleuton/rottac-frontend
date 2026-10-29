@@ -26,10 +26,10 @@ import { BRAND_GRADIENT } from '@/theme';
 dayjs.locale('pt-br');
 
 const MODE_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode; desc: string }> = {
-  NORMAL:      { label: 'Normal',       color: '#6C63FF', icon: <Psychology />,          desc: 'Estudo equilibrado e progressivo' },
+  NORMAL:      { label: 'Normal',       color: '#F2B705', icon: <Psychology />,          desc: 'Estudo equilibrado e progressivo' },
   FORCA_BRUTA: { label: 'Força Bruta',  color: '#EF4444', icon: <Whatshot />,            desc: 'Foco total nas fraquezas críticas' },
   MODO_GUERRA: { label: 'Modo Guerra',  color: '#F59E0B', icon: <LocalFireDepartment />, desc: 'Reta final: revisão + simulados' },
-  CANSADO:     { label: 'Modo Cansado', color: '#8B5CF6', icon: <BatteryChargingFull />, desc: 'Tarefas leves até recuperar energia' },
+  CANSADO:     { label: 'Modo Cansado', color: '#D4A017', icon: <BatteryChargingFull />, desc: 'Tarefas leves até recuperar energia' },
   RETORNO:     { label: 'Retorno',      color: '#10B981', icon: <Refresh />,             desc: 'Reconstruindo hábito gradualmente' },
 };
 
@@ -41,8 +41,8 @@ const SEVERITY_COLOR: Record<string, string> = {
 };
 
 const TASK_TYPE_COLOR: Record<string, string> = {
-  LEITURA: '#6C63FF', REVISAO: '#FF6584', EXERCICIOS: '#00C896',
-  VIDEO: '#FFB547', RESUMO: '#3B82F6', FLASHCARDS: '#8B5CF6', SIMULADO: '#EF4444',
+  LEITURA: '#F2B705', REVISAO: '#FF6584', EXERCICIOS: '#00C896',
+  VIDEO: '#FFB547', RESUMO: '#3B82F6', FLASHCARDS: '#D4A017', SIMULADO: '#EF4444',
   QUESTOES: '#10B981', REVISAO_ERROS: '#F59E0B',
 };
 
@@ -292,7 +292,7 @@ export default function InteligenciaPage() {
               {profile ? (
                 <Grid container spacing={2}>
                   {[
-                    { label: 'Score de Performance', value: Math.round(profile.performanceScore), color: '#6C63FF', unit: '%' },
+                    { label: 'Score de Performance', value: Math.round(profile.performanceScore), color: '#F2B705', unit: '%' },
                     { label: 'Taxa de Retenção',     value: Math.round(profile.retentionRate),    color: '#10B981', unit: '%' },
                     { label: 'Consistência',          value: Math.round(profile.consistencyScore), color: '#F59E0B', unit: '%' },
                     { label: 'Taxa de Abandono',      value: Math.round(profile.abandonmentRate),  color: '#EF4444', unit: '%' },
@@ -351,15 +351,15 @@ export default function InteligenciaPage() {
           <Card
             sx={{
               background: nextAction?.action
-                ? `linear-gradient(135deg, ${alpha('#6C63FF', 0.12)}, ${alpha('#00C2FF', 0.08)})`
+                ? `linear-gradient(135deg, ${alpha('#F2B705', 0.12)}, ${alpha('#FFD34D', 0.08)})`
                 : undefined,
-              border: nextAction?.action ? `1px solid ${alpha('#6C63FF', 0.3)}` : undefined,
+              border: nextAction?.action ? `1px solid ${alpha('#F2B705', 0.3)}` : undefined,
             }}
           >
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Bolt sx={{ color: '#6C63FF' }} />
+                  <Bolt sx={{ color: '#F2B705' }} />
                   <Typography variant="h6" fontWeight={700}>Próxima Ação</Typography>
                 </Box>
                 {planItems.length > 0 && (
@@ -380,7 +380,7 @@ export default function InteligenciaPage() {
                 <LinearProgress
                   variant="determinate"
                   value={progress}
-                  sx={{ mb: 2, height: 6, borderRadius: 3, bgcolor: alpha('#6C63FF', 0.1), '& .MuiLinearProgress-bar': { background: BRAND_GRADIENT } }}
+                  sx={{ mb: 2, height: 6, borderRadius: 3, bgcolor: alpha('#F2B705', 0.1), '& .MuiLinearProgress-bar': { background: BRAND_GRADIENT } }}
                 />
               )}
 
@@ -389,12 +389,12 @@ export default function InteligenciaPage() {
                   <Box
                     sx={{
                       width: 48, height: 48, borderRadius: 2,
-                      bgcolor: alpha(TASK_TYPE_COLOR[nextAction.action.type] || '#6C63FF', 0.15),
+                      bgcolor: alpha(TASK_TYPE_COLOR[nextAction.action.type] || '#F2B705', 0.15),
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0,
                     }}
                   >
-                    <PlayArrow sx={{ color: TASK_TYPE_COLOR[nextAction.action.type] || '#6C63FF' }} />
+                    <PlayArrow sx={{ color: TASK_TYPE_COLOR[nextAction.action.type] || '#F2B705' }} />
                   </Box>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Typography variant="h6" fontWeight={700} noWrap>
@@ -404,7 +404,7 @@ export default function InteligenciaPage() {
                       <Chip
                         label={nextAction.action.type}
                         size="small"
-                        sx={{ bgcolor: alpha(TASK_TYPE_COLOR[nextAction.action.type] || '#6C63FF', 0.15), fontSize: 11 }}
+                        sx={{ bgcolor: alpha(TASK_TYPE_COLOR[nextAction.action.type] || '#F2B705', 0.15), fontSize: 11 }}
                       />
                       {nextAction.action.estimatedMinutes && (
                         <Chip
@@ -492,13 +492,14 @@ export default function InteligenciaPage() {
                       </ListItemIcon>
                       <ListItemText
                         primary={item.title}
+                        secondaryTypographyProps={{ component: 'div' }}
                         secondary={
                           <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
                             {item.type && (
                               <Chip
                                 label={item.type}
                                 size="small"
-                                sx={{ height: 18, fontSize: 10, bgcolor: alpha(TASK_TYPE_COLOR[item.type] || '#6C63FF', 0.1) }}
+                                sx={{ height: 18, fontSize: 10, bgcolor: alpha(TASK_TYPE_COLOR[item.type] || '#F2B705', 0.1) }}
                               />
                             )}
                             {item.estimatedMinutes && (
@@ -756,7 +757,7 @@ export default function InteligenciaPage() {
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <Timeline sx={{ color: '#6C63FF' }} />
+                  <Timeline sx={{ color: '#F2B705' }} />
                   <Typography variant="h6" fontWeight={700}>Eficiência por Hora</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>

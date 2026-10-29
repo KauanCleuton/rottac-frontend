@@ -24,7 +24,7 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   UNDER_REVIEW:      { label: 'Em revisão',          color: '#3B82F6' },
   CORRECTED:         { label: 'Corrigida',            color: '#22C55E' },
   REWRITE_REQUESTED: { label: 'Reescrita solicitada', color: '#EF4444' },
-  REWRITTEN:         { label: 'Reescrita enviada',    color: '#8B5CF6' },
+  REWRITTEN:         { label: 'Reescrita enviada',    color: '#D4A017' },
   ARCHIVED:          { label: 'Arquivada',            color: '#9CA3AF' },
 };
 
@@ -94,7 +94,7 @@ export default function RedacaoPage() {
       {/* Stats rápidas */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {[
-          { label: 'Total escritas', value: (essays as any[]).length, color: '#7B2FF7' },
+          { label: 'Total escritas', value: (essays as any[]).length, color: '#F2B705' },
           { label: 'Pendentes', value: pending.length, color: '#F59E0B' },
           { label: 'Corrigidas', value: corrected.length, color: '#22C55E' },
           { label: 'Nota média', value: avgScore ? `${avgScore}/1000` : '—', color: SCORE_COLOR(avgScore) },

@@ -52,7 +52,7 @@ export default function TemplatesPage() {
           </Typography>
         </Box>
         <Button variant="contained" startIcon={<Add />}
-          sx={{ background: 'linear-gradient(135deg,#7B2FF7,#00C2FF)' }}
+          sx={{ background: 'linear-gradient(135deg,#F2B705,#FFD34D)' }}
           onClick={() => setOpen(true)}>
           Novo template
         </Button>
@@ -119,8 +119,8 @@ export default function TemplatesPage() {
                 <Chip key={cat} label={cat} size="small" clickable
                   onClick={() => setForm(f => ({ ...f, category: f.category === cat ? '' : cat }))}
                   sx={{
-                    bgcolor: form.category === cat ? alpha('#7B2FF7', 0.15) : undefined,
-                    color: form.category === cat ? '#7B2FF7' : undefined,
+                    bgcolor: form.category === cat ? alpha('#F2B705', 0.15) : undefined,
+                    color: form.category === cat ? '#F2B705' : undefined,
                     fontWeight: form.category === cat ? 700 : 400,
                   }} />
               ))}
@@ -151,7 +151,7 @@ function TemplateCard({ template, onUse }: { template: any; onUse: () => void })
           <Typography variant="subtitle2" fontWeight={700}>{template.title}</Typography>
           {template.category && (
             <Chip label={template.category} size="small"
-              sx={{ bgcolor: alpha('#7B2FF7', 0.08), color: '#7B2FF7', fontSize: 10 }} />
+              sx={{ bgcolor: alpha('#F2B705', 0.08), color: '#F2B705', fontSize: 10 }} />
           )}
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{

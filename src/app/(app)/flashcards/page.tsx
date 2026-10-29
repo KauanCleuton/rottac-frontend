@@ -19,15 +19,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { flashcardApi, flashcardFolderApi, subjectApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { BRAND_GRADIENT } from '@/theme';
+import FlipCard from '@/components/flashcards/FlipCard';
 
 const STUDY_MODES = [
   { key: 'due', label: 'Revisar Hoje', icon: <Schedule />, color: '#F59E0B', desc: 'Cards com revisão vencida (SM-2)' },
   { key: 'weak', label: 'Cards Fracos', icon: <FitnessCenter />, color: '#EF4444', desc: 'Acerto abaixo de 60%' },
   { key: 'new', label: 'Cards Novos', icon: <Star />, color: '#10B981', desc: 'Nunca revisados' },
-  { key: 'marathon', label: 'Maratona', icon: <LocalFireDepartment />, color: '#7B2FF7', desc: 'Todos os cards embaralhados' },
+  { key: 'marathon', label: 'Maratona', icon: <LocalFireDepartment />, color: '#F2B705', desc: 'Todos os cards embaralhados' },
 ];
 
-const FOLDER_COLORS = ['#6C63FF', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899', '#8B5CF6', '#14B8A6'];
+const FOLDER_COLORS = ['#F2B705', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899', '#D4A017', '#14B8A6'];
 
 const RATING_OPTIONS = [
   { value: 0, label: 'Errei', color: '#EF4444' },
@@ -55,7 +56,7 @@ export default function FlashcardsPage() {
   const [folderMenu, setFolderMenu] = useState<{ anchor: HTMLElement; id: string } | null>(null);
 
   // ── Forms
-  const [folderForm, setFolderForm] = useState({ name: '', color: '#6C63FF' });
+  const [folderForm, setFolderForm] = useState({ name: '', color: '#F2B705' });
   const [cardForm, setCardForm] = useState({ front: '', back: '', folderId: '' });
 
   // ── Queries
@@ -77,7 +78,7 @@ export default function FlashcardsPage() {
   // ── Mutations
   const createFolderMutation = useMutation({
     mutationFn: () => flashcardFolderApi.createFolder(folderForm),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['flashcard-folders'] }); setCreateFolderOpen(false); setFolderForm({ name: '', color: '#6C63FF' }); toast.success('Pasta criada!'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['flashcard-folders'] }); setCreateFolderOpen(false); setFolderForm({ name: '', color: '#F2B705' }); toast.success('Pasta criada!'); },
   });
 
   const deleteFolderMutation = useMutation({
@@ -119,16 +120,29 @@ export default function FlashcardsPage() {
 
   const nextCard = () => {
     setFlipped(false);
-    setTimeout(() => {
-      if (studyIndex + 1 >= studyQueue.length) {
-        setStudyMode('done');
-      } else {
-        setStudyIndex(i => i + 1);
-      }
-    }, 200);
+    if (studyIndex + 1 >= studyQueue.length) {
+      setStudyMode('done');
+    } else {
+      setStudyIndex(i => i + 1);
+    }
   };
 
   const currentCard = studyQueue[studyIndex];
+
+  useEffect(() => {
+    if (!studyMode || studyMode === 'done') return;
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.closest('input, textarea, [role="dialog"]')) return;
+      if (e.key === ' ') {
+        e.preventDefault();
+        setFlipped(f => !f);
+      } else if (flipped && !reviewMutation.isPending && ['1', '2', '3', '4'].includes(e.key) && currentCard) {
+        reviewMutation.mutate({ id: currentCard.id, rating: Number(e.key) - 1 });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [studyMode, flipped, currentCard, reviewMutation]);
   const modeInfo = STUDY_MODES.find(m => m.key === studyMode);
 
   // ── Tela de estudo
@@ -143,7 +157,7 @@ export default function FlashcardsPage() {
             <LinearProgress
               variant="determinate"
               value={((studyIndex) / studyQueue.length) * 100}
-              sx={{ mt: 0.5, height: 6, borderRadius: 3, bgcolor: alpha(modeInfo?.color || '#6C63FF', 0.15),
+              sx={{ mt: 0.5, height: 6, borderRadius: 3, bgcolor: alpha(modeInfo?.color || '#F2B705', 0.15),
                 '& .MuiLinearProgress-bar': { bgcolor: modeInfo?.color } }}
             />
           </Box>
@@ -156,34 +170,11 @@ export default function FlashcardsPage() {
           <Chip icon={<Cancel sx={{ fontSize: 14, color: '#EF4444 !important' }} />} label={`${sessionStats.wrong} erradas`} size="small" sx={{ bgcolor: alpha('#EF4444', 0.1), color: '#EF4444' }} />
         </Box>
 
-        {/* Card flip */}
-        <Box
-          onClick={() => setFlipped(f => !f)}
-          sx={{
-            minHeight: 260, borderRadius: 4, cursor: 'pointer', mb: 3, p: 4,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: flipped
-              ? `linear-gradient(135deg, ${alpha('#10B981', 0.08)}, ${alpha('#3B82F6', 0.08)})`
-              : `linear-gradient(135deg, ${alpha('#7B2FF7', 0.06)}, ${alpha('#00C2FF', 0.06)})`,
-            border: `2px solid ${flipped ? alpha('#10B981', 0.3) : alpha('#7B2FF7', 0.2)}`,
-            transition: 'all 0.3s',
-            position: 'relative',
-          }}
-        >
-          <Box sx={{ position: 'absolute', top: 12, left: 16 }}>
-            <Chip label={flipped ? 'Resposta' : 'Pergunta'} size="small"
-              sx={{ bgcolor: flipped ? alpha('#10B981', 0.15) : alpha('#7B2FF7', 0.15),
-                color: flipped ? '#10B981' : '#7B2FF7', fontWeight: 700, fontSize: 11 }} />
-          </Box>
-          <Typography variant="h6" textAlign="center" fontWeight={500} sx={{ lineHeight: 1.6 }}>
-            {flipped ? currentCard?.back : currentCard?.front}
-          </Typography>
-          {!flipped && (
-            <Typography variant="caption" color="text.secondary" sx={{ position: 'absolute', bottom: 12 }}>
-              Clique para revelar
-            </Typography>
-          )}
-        </Box>
+        {/* Card com giro 3D */}
+        {currentCard && (
+          <FlipCard key={currentCard.id} front={currentCard.front} back={currentCard.back}
+            flipped={flipped} onFlip={() => setFlipped(f => !f)} />
+        )}
 
         {/* Botões de avaliação */}
         {flipped ? (
@@ -200,6 +191,7 @@ export default function FlashcardsPage() {
                   }}
                 >
                   {opt.label}
+                  <Box component="span" sx={{ ml: 1, opacity: 0.55, fontSize: 12, fontWeight: 600 }}>{opt.value + 1}</Box>
                 </Button>
               </Grid>
             ))}
@@ -209,6 +201,7 @@ export default function FlashcardsPage() {
             onClick={() => setFlipped(true)}
             sx={{ background: BRAND_GRADIENT, py: 1.5, fontSize: 16, fontWeight: 700 }}>
             Revelar resposta
+            <Box component="span" sx={{ ml: 1, opacity: 0.6, fontSize: 12, fontWeight: 600 }}>(espaço)</Box>
           </Button>
         )}
       </Box>
@@ -279,7 +272,7 @@ export default function FlashcardsPage() {
                 onClick={() => setSelectedFolder(null)}
                 sx={{ borderRadius: 2, mb: 0.5, py: 0.75 }}
               >
-                <ListItemIcon sx={{ minWidth: 32 }}><FolderOpen sx={{ color: '#6C63FF', fontSize: 20 }} /></ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 32 }}><FolderOpen sx={{ color: '#F2B705', fontSize: 20 }} /></ListItemIcon>
                 <ListItemText primary="Todos os cards" primaryTypographyProps={{ fontSize: 13, fontWeight: selectedFolder === null ? 600 : 400 }} />
                 <Chip label={folders.reduce((a: number, f: any) => a + (f._count?.flashcards || 0), 0)} size="small" sx={{ fontSize: 10, height: 18 }} />
               </ListItemButton>
@@ -323,10 +316,10 @@ export default function FlashcardsPage() {
           {globalStats && (
             <Grid container spacing={1.5} sx={{ mb: 2 }}>
               {[
-                { label: 'Total', value: globalStats.total, color: '#6C63FF' },
+                { label: 'Total', value: globalStats.total, color: '#F2B705' },
                 { label: 'Revisar hoje', value: globalStats.dueCount, color: '#F59E0B' },
                 { label: 'Novos', value: globalStats.newCount, color: '#10B981' },
-                { label: 'Dominados', value: globalStats.masteredCount, color: '#8B5CF6' },
+                { label: 'Dominados', value: globalStats.masteredCount, color: '#D4A017' },
                 { label: 'Acerto', value: `${globalStats.accuracy}%`, color: '#3B82F6' },
               ].map(s => (
                 <Grid size={{ xs: 6, sm: 'auto' }} key={s.label}>

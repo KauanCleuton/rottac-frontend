@@ -23,7 +23,7 @@ dayjs.locale('pt-br');
 const DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const ROUTINE_TYPES = ['ESTUDO', 'TRABALHO', 'LIVRE', 'SONO'];
 const ROUTINE_COLORS: Record<string, string> = {
-  ESTUDO: '#7B2FF7', TRABALHO: '#3B82F6', LIVRE: '#22C55E', SONO: '#F59E0B',
+  ESTUDO: '#F2B705', TRABALHO: '#3B82F6', LIVRE: '#22C55E', SONO: '#F59E0B',
 };
 
 const EXPERIENCE_LEVELS = [
@@ -128,10 +128,10 @@ export default function PerfilPage() {
       </Box>
 
       {/* Hero card */}
-      <Card sx={{ mb: 3, background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.15)}, ${alpha(theme.palette.secondary?.main || '#00C2FF', 0.1)})` }}>
+      <Card sx={{ mb: 3, background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.15)}, ${alpha(theme.palette.secondary?.main || '#FFD34D', 0.1)})` }}>
         <CardContent>
           <Box sx={{ display: 'flex', gap: 2.5, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Avatar sx={{ width: 72, height: 72, fontSize: 28, bgcolor: 'primary.main', fontWeight: 800 }}>
+            <Avatar sx={{ width: 72, height: 72, fontSize: 28, bgcolor: 'primary.main', color: '#0A0A0B', fontWeight: 800 }}>
               {profile?.name?.[0]?.toUpperCase()}
             </Avatar>
             <Box sx={{ flexGrow: 1 }}>

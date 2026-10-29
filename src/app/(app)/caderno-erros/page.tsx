@@ -20,6 +20,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { errorNotebookApi, subjectApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
+import Link from 'next/link';
+import { LibraryBooks } from '@mui/icons-material';
 import 'dayjs/locale/pt-br';
 
 dayjs.locale('pt-br');
@@ -27,7 +29,7 @@ dayjs.locale('pt-br');
 const ERROR_TYPES = [
   { value: 'FALTA_ATENCAO', label: 'Falta de Atenção', color: '#F59E0B', icon: '👁️' },
   { value: 'CONTEUDO_NAO_ESTUDADO', label: 'Conteúdo Novo', color: '#EF4444', icon: '📚' },
-  { value: 'INTERPRETACAO', label: 'Interpretação', color: '#8B5CF6', icon: '🧠' },
+  { value: 'INTERPRETACAO', label: 'Interpretação', color: '#D4A017', icon: '🧠' },
   { value: 'ESQUECIMENTO', label: 'Esquecimento', color: '#3B82F6', icon: '💭' },
 ];
 
@@ -374,8 +376,19 @@ export default function CadernoErrosPage() {
                               <Chip label="Revisar" size="small" color="warning" variant="outlined"
                                 sx={{ fontSize: 10, height: 18 }} />
                             )}
+                            {entry.questionId && (
+                              <Chip label="Do banco de questões" size="small" variant="outlined"
+                                sx={{ fontSize: 10, height: 18 }} />
+                            )}
                           </Box>
                           <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            {entry.questionId && (
+                              <Tooltip title="Refazer a questão (atualiza a revisão espaçada)">
+                                <IconButton size="small" color="primary" component={Link} href={`/questoes/revisao?id=${entry.questionId}`}>
+                                  <LibraryBooks fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            )}
                             <Tooltip title="Iniciar Revisão">
                               <IconButton size="small" color="primary" onClick={() => setReviewEntryId(entry.id)}>
                                 <Refresh fontSize="small" />
@@ -446,7 +459,7 @@ export default function CadernoErrosPage() {
         </DialogTitle>
 
         <LinearProgress variant="determinate" value={((reviewIndex + 1) / entries.length) * 100}
-          sx={{ height: 4, '& .MuiLinearProgress-bar': { bgcolor: '#7B2FF7' } }} />
+          sx={{ height: 4, '& .MuiLinearProgress-bar': { bgcolor: '#F2B705' } }} />
 
         <DialogContent sx={{ pt: 3 }}>
           {currentReviewEntry && (() => {

@@ -52,7 +52,7 @@ function ConviteContent() {
       bgcolor: '#F5F7FA', p: 2 }}>
       <Card sx={{ maxWidth: 440, width: '100%' }}>
         <CardContent sx={{ p: 4, textAlign: 'center' }}>
-          <Box sx={{ width: 64, height: 64, borderRadius: 3, bgcolor: '#7B2FF7',
+          <Box sx={{ width: 64, height: 64, borderRadius: 3, bgcolor: '#F2B705',
             display: 'flex', alignItems: 'center', justifyContent: 'center', mx: 'auto', mb: 2 }}>
             <School sx={{ color: '#fff', fontSize: 32 }} />
           </Box>
@@ -76,8 +76,8 @@ function ConviteContent() {
               <Typography color="text.secondary" mb={3}>
                 Você foi convidado por
               </Typography>
-              <Paper elevation={0} sx={{ p: 2, borderRadius: 2, bgcolor: alpha('#7B2FF7', 0.06),
-                border: `1px solid ${alpha('#7B2FF7', 0.2)}`, mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Paper elevation={0} sx={{ p: 2, borderRadius: 2, bgcolor: alpha('#F2B705', 0.06),
+                border: `1px solid ${alpha('#F2B705', 0.2)}`, mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Avatar src={inviteInfo?.studentAvatar} sx={{ width: 44, height: 44 }}>
                   {inviteInfo?.studentName?.[0]}
                 </Avatar>
@@ -92,9 +92,9 @@ function ConviteContent() {
               </Typography>
 
               <Button fullWidth variant="contained" size="large"
-                sx={{ background: 'linear-gradient(135deg,#7B2FF7,#00C2FF)', fontWeight: 700, py: 1.5 }}
+                sx={{ background: 'linear-gradient(135deg,#F2B705,#FFD34D)', fontWeight: 700, py: 1.5 }}
                 onClick={handleAccept} disabled={accepting}>
-                {accepting ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : 'Aceitar convite'}
+                {accepting ? <CircularProgress size={20} color="inherit" /> : 'Aceitar convite'}
               </Button>
               <Button fullWidth variant="text" sx={{ mt: 1 }} onClick={() => router.push('/login')}>
                 Fazer login primeiro

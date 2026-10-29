@@ -195,8 +195,8 @@ export default function DesafioPage() {
                       label={challenge.subject.name}
                       size="small"
                       sx={{
-                        bgcolor: alpha(challenge.subject.color || '#6C63FF', 0.12),
-                        color: challenge.subject.color || '#6C63FF',
+                        bgcolor: alpha(challenge.subject.color || '#F2B705', 0.12),
+                        color: challenge.subject.color || '#F2B705',
                       }}
                     />
                   )}
@@ -218,8 +218,8 @@ export default function DesafioPage() {
                 <Paper
                   sx={{
                     p: 3, mb: 3,
-                    bgcolor: alpha('#6C63FF', 0.04),
-                    border: `1px solid ${alpha('#6C63FF', 0.12)}`,
+                    bgcolor: alpha('#F2B705', 0.04),
+                    border: `1px solid ${alpha('#F2B705', 0.12)}`,
                     borderRadius: 2,
                   }}
                 >
@@ -247,16 +247,16 @@ export default function DesafioPage() {
                           border: `2px solid ${
                             isCorrect ? '#10B981' :
                             isWrong ? '#EF4444' :
-                            isSelected ? '#6C63FF' :
+                            isSelected ? '#F2B705' :
                             alpha(theme.palette.divider, 0.5)
                           }`,
                           bgcolor: isCorrect ? alpha('#10B981', 0.08) :
                                    isWrong ? alpha('#EF4444', 0.08) :
-                                   isSelected ? alpha('#6C63FF', 0.08) : undefined,
+                                   isSelected ? alpha('#F2B705', 0.08) : undefined,
                           transition: 'all 0.15s',
                           '&:hover': wasAnswered ? {} : {
-                            bgcolor: alpha('#6C63FF', 0.05),
-                            borderColor: alpha('#6C63FF', 0.4),
+                            bgcolor: alpha('#F2B705', 0.05),
+                            borderColor: alpha('#F2B705', 0.4),
                           },
                         }}
                       >
@@ -265,7 +265,7 @@ export default function DesafioPage() {
                             sx={{
                               width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              bgcolor: isCorrect ? '#10B981' : isWrong ? '#EF4444' : isSelected ? '#6C63FF' : alpha(theme.palette.divider, 0.5),
+                              bgcolor: isCorrect ? '#10B981' : isWrong ? '#EF4444' : isSelected ? '#F2B705' : alpha(theme.palette.divider, 0.5),
                               color: '#fff',
                               fontWeight: 700,
                               fontSize: 13,
@@ -321,7 +321,7 @@ export default function DesafioPage() {
             <Card sx={{ mt: 2 }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <History sx={{ color: '#6C63FF' }} />
+                  <History sx={{ color: '#F2B705' }} />
                   <Typography variant="h6" fontWeight={700}>Últimos desafios</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>

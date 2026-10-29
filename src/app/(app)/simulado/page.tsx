@@ -66,7 +66,7 @@ function newId() { return `sim_${Date.now()}_${Math.random().toString(36).slice(
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const ALTS: AnswerKey[] = ['A', 'B', 'C', 'D', 'E'];
-const ALT_COLORS: Record<AnswerKey, string> = { A: '#7B2FF7', B: '#3B82F6', C: '#22C55E', D: '#F59E0B', E: '#EF4444', '': '#888' };
+const ALT_COLORS: Record<AnswerKey, string> = { A: '#F2B705', B: '#3B82F6', C: '#22C55E', D: '#F59E0B', E: '#EF4444', '': '#888' };
 
 function fmtTime(sec: number) {
   const h = Math.floor(sec / 3600);
@@ -499,7 +499,7 @@ export default function SimuladoPage() {
         </Paper>
 
         <LinearProgress variant="determinate" value={pctAnswered}
-          sx={{ mb: 2, height: 6, borderRadius: 3, '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #7B2FF7, #00C2FF)', borderRadius: 3 } }} />
+          sx={{ mb: 2, height: 6, borderRadius: 3, '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #F2B705, #FFD34D)', borderRadius: 3 } }} />
 
         {/* Question Grid */}
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>

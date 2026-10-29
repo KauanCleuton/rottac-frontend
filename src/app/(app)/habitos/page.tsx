@@ -105,7 +105,7 @@ export default function HabitosPage() {
             <LinearProgress variant="determinate"
               value={habits.length > 0 ? (totalCompletedToday / habits.length) * 100 : 0}
               sx={{ height: 10, borderRadius: 5, bgcolor: alpha(theme.palette.primary.main, 0.1),
-                '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #7B2FF7, #00C2FF)', borderRadius: 5 } }} />
+                '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #F2B705, #FFD34D)', borderRadius: 5 } }} />
             <Box sx={{ display: 'flex', gap: 2, mt: 1.5, justifyContent: 'center' }}>
               {habits.slice(0, 5).map((h: any) => {
                 const done = (h.completions || []).some((c: any) =>

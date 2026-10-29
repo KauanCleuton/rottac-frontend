@@ -22,7 +22,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 dayjs.locale('pt-br');
 
-const PEN_COLORS = ['#EF4444', '#F59E0B', '#22C55E', '#3B82F6', '#7B2FF7', '#EC4899', '#000000'];
+const PEN_COLORS = ['#EF4444', '#F59E0B', '#22C55E', '#3B82F6', '#F2B705', '#EC4899', '#000000'];
 const HIGHLIGHTER_COLORS = ['rgba(255,235,59,0.5)', 'rgba(76,175,80,0.4)', 'rgba(33,150,243,0.4)', 'rgba(244,67,54,0.4)'];
 const FOLDERS_KEY = 'aprova-ai-pdf-folders';
 

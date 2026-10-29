@@ -11,7 +11,7 @@ import {
 } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { gamificationApi } from '@/lib/api';
-import { BRAND_GRADIENT } from '@/theme';
+import { BRAND_GRADIENT, HERO_GRADIENT } from '@/theme';
 
 const BADGE_ICONS: Record<string, string> = {
   first_study: '🎓',
@@ -50,7 +50,7 @@ export default function GamificacaoPage() {
       </Box>
 
       {/* Level + XP Hero */}
-      <Card sx={{ mb: 3, background: BRAND_GRADIENT, color: '#fff', overflow: 'visible' }}>
+      <Card sx={{ mb: 3, background: HERO_GRADIENT, color: '#fff', border: '1px solid rgba(242,183,5,0.25)', overflow: 'visible' }}>
         <CardContent sx={{ py: 3 }}>
           <Grid container spacing={3} alignItems="center">
             <Grid size={{ xs: 12, md: 4 }} sx={{ textAlign: 'center' }}>
@@ -107,7 +107,7 @@ export default function GamificacaoPage() {
       {/* Stats rápidos */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {[
-          { label: 'XP Total', value: gami.xp, icon: '⚡', color: '#7B2FF7' },
+          { label: 'XP Total', value: gami.xp, icon: '⚡', color: '#F2B705' },
           { label: 'Streak Atual', value: `${gami.streak}d`, icon: '🔥', color: '#FF6B35' },
           { label: 'Melhor Streak', value: `${gami.bestStreak}d`, icon: '🏆', color: '#F59E0B' },
           { label: 'Horas Totais', value: `${Math.round(gami.totalHours || 0)}h`, icon: '⏱️', color: '#3B82F6' },
@@ -168,7 +168,7 @@ export default function GamificacaoPage() {
 
       {/* Novos badges */}
       {(gami.newBadges || []).length > 0 && (
-        <Box sx={{ mt: 2, p: 2, borderRadius: 3, background: BRAND_GRADIENT, color: '#fff', textAlign: 'center' }}>
+        <Box sx={{ mt: 2, p: 2, borderRadius: 3, background: HERO_GRADIENT, color: '#fff', border: '1px solid rgba(242,183,5,0.25)', textAlign: 'center' }}>
           <Typography variant="h6" fontWeight={800}>🎉 Nova Conquista!</Typography>
           {gami.newBadges.map((b: any) => (
             <Typography key={b.id} variant="body2">

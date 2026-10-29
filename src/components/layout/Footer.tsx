@@ -1,76 +1,74 @@
 'use client';
 
-import { Box, Typography, alpha, useTheme } from '@mui/material';
+import { Box, Typography, alpha } from '@mui/material';
+import Link from 'next/link';
+import { LogoMark } from '@/components/brand/Logo';
+import { GOLD } from '@/theme';
 
-export default function Footer() {
-  const theme = useTheme();
+// Rodapé sempre escuro (nos dois temas), com detalhes em dourado
+const INK = '#0A0A0B';
+const TEXT = alpha('#F5F5F4', 0.62);
 
+const LINKS = [
+  { href: '/', label: 'Conheça a Rotta' },
+  { href: '/planos', label: 'Planos' },
+  { href: '/questoes/banco', label: 'Banco de questões' },
+  { href: '/cadernos', label: 'Cadernos' },
+];
+
+export default function Footer({ compact = false }: { compact?: boolean }) {
+  const year = new Date().getFullYear();
   return (
     <Box
       component="footer"
       sx={{
-        borderTop: `1px solid ${alpha(theme.palette.divider, 0.4)}`,
-        py: 2,
-        px: 3,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: 1,
+        bgcolor: INK,
+        color: TEXT,
+        borderTop: `1px solid ${alpha(GOLD, 0.25)}`,
+        px: { xs: 2.5, md: 4 },
+        py: compact ? 2 : 3,
+        mt: 'auto',
       }}
     >
-      {/* Logo + nome */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Box
-          sx={{
-            width: 24, height: 24, borderRadius: 1,
-            background: 'linear-gradient(135deg, #7B2FF7, #00C2FF)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: 11 }}>R</Typography>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+          <LogoMark size={28} />
+          <Box>
+            <Typography sx={{ color: '#F5F5F4', fontWeight: 900, fontSize: 15, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+              Rotta <Box component="span" sx={{ color: GOLD, fontWeight: 600 }}>Concursos</Box>
+            </Typography>
+            <Typography sx={{ color: TEXT, fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              Sua rota até a aprovação
+            </Typography>
+          </Box>
         </Box>
-        <Typography variant="caption" fontWeight={700} sx={{ letterSpacing: -0.3 }}>
-          Rotta<span style={{ color: theme.palette.primary.main }}>Concursos</span>
-        </Typography>
-      </Box>
 
-      {/* Copyright central */}
-      <Box sx={{ textAlign: 'center' }}>
-        <Typography variant="caption" color="text.disabled" display="block">
-          © {new Date().getFullYear()} RottaConcursos. Todos os direitos reservados.
-        </Typography>
-        <Typography variant="caption" color="text.disabled" display="block" sx={{ fontSize: 10 }}>
-          É proibida a reprodução, cópia, distribuição ou uso comercial sem autorização expressa do titular.
-        </Typography>
-        <Typography variant="caption" color="text.disabled" display="block" sx={{ fontSize: 10 }}>
-          Direitos econômicos e patrimoniais pertencentes a{' '}
-          <Box
-            component="a"
-            href="https://www.instagram.com/kauan.cleuton"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: 'text.disabled', textDecoration: 'underline', '&:hover': { color: 'primary.main' } }}
-          >
+        {!compact && (
+          <Box component="nav" sx={{ display: 'flex', gap: { xs: 2, md: 3 }, flexWrap: 'wrap' }}>
+            {LINKS.map((l) => (
+              <Box key={l.href} component={Link} href={l.href}
+                sx={{ color: TEXT, fontSize: 13, textDecoration: 'none', transition: 'color .15s', '&:hover': { color: GOLD } }}>
+                {l.label}
+              </Box>
+            ))}
+          </Box>
+        )}
+
+        <Typography sx={{ fontSize: 12, color: TEXT }}>
+          © {year} Rotta Concursos · Desenvolvido por{' '}
+          <Box component="a" href="https://www.instagram.com/kauan.cleuton" target="_blank" rel="noopener noreferrer"
+            sx={{ color: '#F5F5F4', fontWeight: 600, textDecoration: 'none', '&:hover': { color: GOLD } }}>
             Kauan Cleuton
           </Box>
-          {' '}— Lei 9.610/98 (Lei de Direitos Autorais).
         </Typography>
       </Box>
 
-      {/* Desenvolvido por */}
-      <Typography variant="caption" color="text.disabled">
-        Desenvolvido por{' '}
-        <Box
-          component="a"
-          href="https://www.instagram.com/kauan.cleuton"
-          target="_blank"
-          rel="noopener noreferrer"
-          sx={{ color: 'text.disabled', fontWeight: 700, textDecoration: 'underline', '&:hover': { color: 'primary.main' } }}
-        >
-          Kauan Cleuton
-        </Box>
-      </Typography>
+      {!compact && (
+        <Typography sx={{ maxWidth: 1200, mx: 'auto', mt: 2, pt: 2, borderTop: `1px solid ${alpha('#FFFFFF', 0.06)}`, fontSize: 10.5, color: alpha('#F5F5F4', 0.4), lineHeight: 1.6 }}>
+          Todos os direitos reservados. É proibida a reprodução, cópia, distribuição ou uso comercial sem autorização expressa do titular.
+          Direitos econômicos e patrimoniais pertencentes a Kauan Cleuton — Lei 9.610/98 (Lei de Direitos Autorais).
+        </Typography>
+      )}
     </Box>
   );
 }

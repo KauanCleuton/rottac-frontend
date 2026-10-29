@@ -12,7 +12,7 @@ import { BRAND_GRADIENT } from '@/theme';
 import dayjs from 'dayjs';
 
 const STATUS_COLOR: Record<string, string> = {
-  PENDING: '#F59E0B', REWRITTEN: '#8B5CF6', CORRECTED: '#22C55E', REWRITE_REQUESTED: '#EF4444',
+  PENDING: '#F59E0B', REWRITTEN: '#D4A017', CORRECTED: '#22C55E', REWRITE_REQUESTED: '#EF4444',
 };
 
 export default function ProfessorDashboard() {
@@ -38,7 +38,7 @@ export default function ProfessorDashboard() {
         {[
           { label: 'Para corrigir', value: data?.pendingCount ?? 0, color: '#F59E0B', icon: <Schedule /> },
           { label: 'Corrigidas', value: data?.correctedCount ?? 0, color: '#22C55E', icon: <CheckCircle /> },
-          { label: 'Alunos vinculados', value: data?.students ?? 0, color: '#7B2FF7', icon: <Group /> },
+          { label: 'Alunos vinculados', value: data?.students ?? 0, color: '#F2B705', icon: <Group /> },
         ].map(s => (
           <Grid size={{ xs: 12, sm: 4 }} key={s.label}>
             <Card>
@@ -88,7 +88,7 @@ export default function ProfessorDashboard() {
                         <Typography variant="caption" color="text.secondary">{essay.student?.name}</Typography>
                       </Box>
                       <Box sx={{ flexShrink: 0, display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Chip label={STATUS_COLOR[essay.status] === '#8B5CF6' ? 'Reescrita' : 'Pendente'}
+                        <Chip label={STATUS_COLOR[essay.status] === '#D4A017' ? 'Reescrita' : 'Pendente'}
                           size="small" sx={{ bgcolor: alpha(STATUS_COLOR[essay.status] || '#F59E0B', 0.1),
                             color: STATUS_COLOR[essay.status] || '#F59E0B', fontWeight: 600 }} />
                         <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>

@@ -18,7 +18,7 @@ import {
 } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { analyticsApi, gamificationApi } from '@/lib/api';
-import { BRAND_GRADIENT } from '@/theme';
+import { BRAND_GRADIENT, HERO_GRADIENT } from '@/theme';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
@@ -162,7 +162,7 @@ function CalcAprovacao({ banca }: { banca: string }) {
             onChange={e => setAcertos(e.target.value)} fullWidth />
         </Grid>
       </Grid>
-      <Box sx={{ mt: 1.5, p: 1.5, borderRadius: 2, bgcolor: aprovado === true ? alpha('#22C55E', 0.08) : aprovado === false ? alpha('#EF4444', 0.08) : alpha('#7B2FF7', 0.06) }}>
+      <Box sx={{ mt: 1.5, p: 1.5, borderRadius: 2, bgcolor: aprovado === true ? alpha('#22C55E', 0.08) : aprovado === false ? alpha('#EF4444', 0.08) : alpha('#F2B705', 0.06) }}>
         <Typography variant="body2">
           Você precisa de <strong>{necessario} acertos</strong> de {total} questões ({taxa}%)
           {acertos && (
@@ -430,7 +430,7 @@ export default function ConcursoPage() {
       {active && (
         <>
           {/* Hero */}
-          <Card sx={{ mb: 3, background: BRAND_GRADIENT, color: '#fff', overflow: 'hidden', position: 'relative' }}>
+          <Card sx={{ mb: 3, background: HERO_GRADIENT, color: '#fff', border: '1px solid rgba(242,183,5,0.25)', overflow: 'hidden', position: 'relative' }}>
             <Box sx={{ position: 'absolute', right: -30, top: -30, width: 250, height: 250, borderRadius: '50%', bgcolor: 'rgba(255,255,255,0.05)' }} />
             <CardContent sx={{ py: 3, position: 'relative' }}>
               <Grid container spacing={3} alignItems="center">
@@ -547,7 +547,7 @@ export default function ConcursoPage() {
                   '& .MuiLinearProgress-bar': { bgcolor: readinessColor, borderRadius: 7 } }} />
               <Grid container spacing={2} sx={{ mt: 1.5 }}>
                 {[
-                  { label: 'Cobertura', value: `${avgCoverage}%`, pct: avgCoverage, color: '#7B2FF7', weight: 40 },
+                  { label: 'Cobertura', value: `${avgCoverage}%`, pct: avgCoverage, color: '#F2B705', weight: 40 },
                   { label: 'Acerto Questões', value: avgAccuracy !== null ? `${avgAccuracy}%` : 'Sem dados', pct: avgAccuracy || 0, color: '#3B82F6', weight: 40 },
                   { label: 'Consistência', value: `${Math.round(streakScore)}%`, pct: streakScore, color: '#FF6B35', weight: 20 },
                 ].map(s => (
@@ -570,7 +570,7 @@ export default function ConcursoPage() {
           {/* KPIs */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
             {[
-              { label: 'Horas (30d)', value: `${totalHours30.toFixed(1)}h`, icon: '⏱️', color: '#7B2FF7' },
+              { label: 'Horas (30d)', value: `${totalHours30.toFixed(1)}h`, icon: '⏱️', color: '#F2B705' },
               { label: 'Dias ativos', value: daysStudied30, icon: '📅', color: '#3B82F6' },
               { label: 'Erros pendentes', value: dashboard?.pendingErrors || 0, icon: '❌', color: '#EF4444' },
               { label: 'Flashcards p/ rev.', value: dashboard?.flashcardsDue || 0, icon: '⚡', color: '#F59E0B' },
@@ -646,7 +646,7 @@ export default function ConcursoPage() {
                       </Box>
                       <LinearProgress variant="determinate" value={s.progressPercent}
                         sx={{ height: 6, borderRadius: 3, bgcolor: alpha(s.color || '#888', 0.12),
-                          '& .MuiLinearProgress-bar': { bgcolor: s.progressPercent >= 70 ? '#22C55E' : s.color || '#7B2FF7', borderRadius: 3 } }} />
+                          '& .MuiLinearProgress-bar': { bgcolor: s.progressPercent >= 70 ? '#22C55E' : s.color || '#F2B705', borderRadius: 3 } }} />
                     </Box>
                   ))}
                 </CardContent>

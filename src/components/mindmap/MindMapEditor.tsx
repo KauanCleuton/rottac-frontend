@@ -22,9 +22,9 @@ import { BRAND_GRADIENT } from '@/theme';
 // ─── Node Colors ────────────────────────────────────────────────────────────
 
 const NODE_COLORS = [
-  '#7B2FF7', '#00C2FF', '#22C55E', '#F59E0B',
-  '#EF4444', '#EC4899', '#1E3A8A', '#0A1F44',
-  '#14B8A6', '#8B5CF6',
+  '#F2B705', '#FFD34D', '#22C55E', '#F59E0B',
+  '#EF4444', '#EC4899', '#27272A', '#111113',
+  '#14B8A6', '#D4A017',
 ];
 
 // ─── Custom Node ────────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ function MindNode({ id, data, selected }: NodeProps) {
         fontWeight: 600,
         fontSize: data.isRoot ? 16 : 14,
         boxShadow: selected
-          ? `0 0 0 3px #fff, 0 0 0 5px ${data.color || '#7B2FF7'}`
+          ? `0 0 0 3px #fff, 0 0 0 5px ${data.color || '#F2B705'}`
           : '0 4px 16px rgba(0,0,0,0.25)',
         cursor: 'pointer',
         transition: 'box-shadow 0.2s',
@@ -372,7 +372,7 @@ export default function MindMapEditor({ map, onSave, onBack, isSaving }: MindMap
           />
           <Controls />
           <MiniMap
-            nodeColor={(n) => n.data?.color || '#7B2FF7'}
+            nodeColor={(n) => n.data?.color || '#F2B705'}
             maskColor={alpha(theme.palette.background.default, 0.8)}
             style={{ borderRadius: 12, overflow: 'hidden' }}
           />

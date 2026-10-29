@@ -80,7 +80,7 @@ export default function StudentDetailPage() {
         <Grid size={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'Redações corrigidas', value: corrections.length, color: '#7B2FF7' },
+              { label: 'Redações corrigidas', value: corrections.length, color: '#F2B705' },
               { label: 'Nota média', value: avg ? `${avg}/1000` : '—', color: SCORE_COLOR(avg) },
               { label: 'Última nota', value: corrections[0]?.totalScore ? `${corrections[0].totalScore}/1000` : '—', color: SCORE_COLOR(corrections[0]?.totalScore) },
               {
@@ -114,7 +114,7 @@ export default function StudentDetailPage() {
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <Psychology sx={{ color: '#7B2FF7' }} />
+                  <Psychology sx={{ color: '#F2B705' }} />
                   <Typography variant="subtitle1" fontWeight={700}>Médias por Competência</Typography>
                 </Box>
                 {C_LABELS.map(({ key, label }) => {

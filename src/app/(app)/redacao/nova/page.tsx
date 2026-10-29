@@ -86,7 +86,7 @@ function NovaRedacaoContent() {
         <Button
           variant="contained"
           sx={{ background: BRAND_GRADIENT, fontWeight: 700 }}
-          startIcon={submitMutation.isPending ? <CircularProgress size={18} sx={{ color: '#fff' }} /> : <Send />}
+          startIcon={submitMutation.isPending ? <CircularProgress size={18} color="inherit" /> : <Send />}
           onClick={() => submitMutation.mutate()}
           disabled={!canSubmit || submitMutation.isPending}
         >
@@ -240,7 +240,7 @@ function NovaRedacaoContent() {
               ].map((item, i) => (
                 <Box key={i} sx={{ display: 'flex', gap: 1.5, mb: 1, alignItems: 'flex-start' }}>
                   <Box sx={{ width: 22, height: 22, borderRadius: '50%', flexShrink: 0, mt: 0.2,
-                    bgcolor: alpha('#7B2FF7', 0.12), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    bgcolor: alpha('#F2B705', 0.12), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography variant="caption" fontWeight={800} color="primary">{i + 1}</Typography>
                   </Box>
                   <Box>

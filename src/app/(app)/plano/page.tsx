@@ -28,7 +28,7 @@ dayjs.locale('pt-br');
 
 const TASK_TYPES = ['LEITURA','REVISAO','EXERCICIOS','VIDEO','RESUMO','FLASHCARDS','SIMULADO'];
 const TASK_LABEL: Record<string,string> = { LEITURA:'Leitura', REVISAO:'Revisão', EXERCICIOS:'Exercícios', VIDEO:'Vídeo', RESUMO:'Resumo', FLASHCARDS:'Flashcards', SIMULADO:'Simulado' };
-const TASK_COLOR: Record<string,string> = { LEITURA:'#7B2FF7', REVISAO:'#EC4899', EXERCICIOS:'#22C55E', VIDEO:'#F59E0B', RESUMO:'#3B82F6', FLASHCARDS:'#8B5CF6', SIMULADO:'#EF4444' };
+const TASK_COLOR: Record<string,string> = { LEITURA:'#F2B705', REVISAO:'#EC4899', EXERCICIOS:'#22C55E', VIDEO:'#F59E0B', RESUMO:'#3B82F6', FLASHCARDS:'#D4A017', SIMULADO:'#EF4444' };
 
 export default function PlanoPage() {
   const theme = useTheme();
@@ -343,6 +343,7 @@ export default function PlanoPage() {
                         </ListItemIcon>
                         <ListItemText
                           primary={<Typography variant="body2" fontWeight={500} sx={{ textDecoration: t.isCompleted ? 'line-through' : 'none', opacity: t.isCompleted ? 0.6 : 1 }}>{t.title}</Typography>}
+                          secondaryTypographyProps={{ component: 'div' }}
                           secondary={
                             <Box sx={{ display:'flex', gap:0.5, mt:0.25 }}>
                               <Chip label={TASK_LABEL[t.type]} size="small" sx={{ height:18, fontSize:11, bgcolor: alpha(TASK_COLOR[t.type], 0.1), color: TASK_COLOR[t.type] }} />
@@ -410,7 +411,7 @@ export default function PlanoPage() {
         <Grid container spacing={2}>
           {plans.map((plan: any) => (
             <Grid size={{ xs:12, md:6 }} key={plan.id}>
-              <Card sx={{ borderLeft: plan.isActive ? '4px solid #7B2FF7' : '4px solid transparent' }}>
+              <Card sx={{ borderLeft: plan.isActive ? '4px solid #F2B705' : '4px solid transparent' }}>
                 <CardContent>
                   <Box sx={{ display:'flex', justifyContent:'space-between', mb:1 }}>
                     <Typography fontWeight={700}>{plan.name}</Typography>

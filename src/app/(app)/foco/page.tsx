@@ -561,7 +561,7 @@ export default function FocoPage() {
         </DialogTitle>
 
         <LinearProgress variant="determinate" value={((flashIndex + 1) / recentErrors.length) * 100}
-          sx={{ height: 3, '& .MuiLinearProgress-bar': { bgcolor: '#7B2FF7' } }} />
+          sx={{ height: 3, '& .MuiLinearProgress-bar': { bgcolor: '#F2B705' } }} />
 
         <DialogContent sx={{ pt: 3 }}>
           {recentErrors[flashIndex] && (() => {
@@ -623,7 +623,7 @@ export default function FocoPage() {
           ) : (
             <Button variant="contained" startIcon={<PlayArrow />}
               onClick={() => { setFlashReviewOpen(false); startFocus(); }}
-              sx={{ background: 'linear-gradient(135deg, #7B2FF7, #00C2FF)' }}>
+              sx={{ background: 'linear-gradient(135deg, #F2B705, #FFD34D)' }}>
               Iniciar Foco!
             </Button>
           )}

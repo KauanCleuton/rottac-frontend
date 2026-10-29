@@ -17,8 +17,8 @@ import { subjectApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 const COLORS = [
-  '#7B2FF7','#00C2FF','#22C55E','#F59E0B','#EF4444',
-  '#EC4899','#1E3A8A','#14B8A6','#8B5CF6','#0A1F44',
+  '#F2B705','#FFD34D','#22C55E','#F59E0B','#EF4444',
+  '#EC4899','#27272A','#14B8A6','#D4A017','#111113',
 ];
 const DIFFICULTIES = ['FACIL','MEDIO','DIFICIL'];
 const DIFF_LABEL: Record<string,string> = { FACIL:'Fácil', MEDIO:'Médio', DIFICIL:'Difícil' };

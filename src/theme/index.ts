@@ -1,146 +1,163 @@
-import { createTheme, alpha } from '@mui/material/styles';
+import { createTheme, alpha, type ThemeOptions } from '@mui/material/styles';
 
-// ─── Paleta AprovAI ────────────────────────────────────────────────────────
-const NAVY_DARK   = '#0A1F44';
-const NAVY        = '#1E3A8A';
-const PURPLE      = '#7B2FF7';
-const PURPLE_DARK = '#5A1FCF';
-const CYAN        = '#00C2FF';
-const SUCCESS     = '#22C55E';
-const GRAY_MID    = '#9CA3AF';
-const GRAY_DARK   = '#1F2937';
+// ─── Paleta Rotta ──────────────────────────────────────────────────────────
+// Preto + grafite + dourado + branco. O dourado é a única cor de marca;
+// verde/vermelho/âmbar ficam reservados para estados (acerto, erro, alerta).
+export const GOLD        = '#F2B705';
+export const GOLD_LIGHT  = '#FFD34D';
+export const GOLD_DARK   = '#C99A06';
+export const GOLD_DEEP   = '#8A6A00'; // dourado legível sobre fundo branco (texto)
 
-// O gradiente da marca
-export const BRAND_GRADIENT = 'linear-gradient(135deg, #7B2FF7, #00C2FF)';
+const INK         = '#0A0A0B';
+const CARBON      = '#141416';
+const IRON        = '#2A2A2E';
+const ASH         = '#A1A1AA';
+const SMOKE       = '#5F5F66';
+const PAPER       = '#FFFFFF';
+const IVORY       = '#F6F6F3';
 
-const baseShape = { shape: { borderRadius: 12 } };
+const SUCCESS = '#22C55E';
+const ERROR   = '#EF4444';
+const WARNING = '#F59E0B';
+const INFO    = '#3B82F6';
 
-const baseTypography = {
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontWeight: 800 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 700 },
-    h4: { fontWeight: 700 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 600 },
-    button: { fontWeight: 600, textTransform: 'none' as const },
-  },
+// Gradiente da marca (dourado)
+export const BRAND_GRADIENT = `linear-gradient(135deg, ${GOLD_LIGHT} 0%, ${GOLD} 45%, ${GOLD_DARK} 100%)`;
+// Cards de destaque: preto com brilho dourado (texto branco legível em ambos os temas)
+export const HERO_GRADIENT = 'linear-gradient(135deg, #0A0A0B 0%, #1C1C1F 55%, #3A2E08 100%)';
+export const BRAND_GRADIENT_HOVER = `linear-gradient(135deg, ${GOLD} 0%, ${GOLD_DARK} 100%)`;
+
+const typography: ThemeOptions['typography'] = {
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  h1: { fontWeight: 800, letterSpacing: '-0.03em' },
+  h2: { fontWeight: 800, letterSpacing: '-0.025em' },
+  h3: { fontWeight: 700, letterSpacing: '-0.02em' },
+  h4: { fontWeight: 700, letterSpacing: '-0.02em' },
+  h5: { fontWeight: 700, letterSpacing: '-0.01em' },
+  h6: { fontWeight: 600 },
+  button: { fontWeight: 600, textTransform: 'none' },
+  overline: { fontWeight: 700, letterSpacing: '0.12em' },
 };
 
-const baseComponents = {
-  MuiButton: {
-    styleOverrides: {
-      root: {
-        borderRadius: 10,
-        padding: '10px 20px',
-        boxShadow: 'none',
-        '&:hover': { boxShadow: 'none' },
-      },
-      containedPrimary: {
-        background: BRAND_GRADIENT,
-        '&:hover': { background: `linear-gradient(135deg, ${PURPLE_DARK}, #009FCF)` },
-      },
-    },
-  },
-  MuiCard: {
-    styleOverrides: {
-      root: { borderRadius: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' },
-    },
-  },
-  MuiChip: {
-    styleOverrides: { root: { borderRadius: 8, fontWeight: 600 } },
-  },
-  MuiTextField: {
-    styleOverrides: {
-      root: { '& .MuiOutlinedInput-root': { borderRadius: 10 } },
-    },
-  },
-  MuiLinearProgress: {
-    styleOverrides: {
-      root: { borderRadius: 8 },
-      bar: { borderRadius: 8 },
-    },
-  },
-};
+function buildComponents(mode: 'light' | 'dark'): ThemeOptions['components'] {
+  const dark = mode === 'dark';
+  const border = dark ? alpha('#FFFFFF', 0.08) : alpha('#000000', 0.08);
 
-// ─── Light Theme ───────────────────────────────────────────────────────────
-export const lightTheme = createTheme({
-  ...baseShape,
-  ...baseTypography,
-  palette: {
-    mode: 'light',
-    primary: {
-      main: PURPLE,
-      light: alpha(PURPLE, 0.12),
-      dark: PURPLE_DARK,
-      contrastText: '#fff',
+  return {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: { WebkitFontSmoothing: 'antialiased' },
+        '::selection': { background: alpha(GOLD, 0.35) },
+        '*::-webkit-scrollbar': { width: 10, height: 10 },
+        '*::-webkit-scrollbar-thumb': {
+          background: dark ? IRON : '#D4D4D8', borderRadius: 8,
+          border: `2px solid ${dark ? INK : IVORY}`,
+        },
+        '*::-webkit-scrollbar-track': { background: 'transparent' },
+      },
     },
-    secondary: {
-      main: CYAN,
-      dark: '#009FCF',
-      contrastText: '#fff',
+    MuiButton: {
+      defaultProps: { disableElevation: true },
+      styleOverrides: {
+        root: { borderRadius: 10, padding: '9px 18px' },
+        containedPrimary: {
+          background: BRAND_GRADIENT,
+          color: INK,
+          '&:hover': { background: BRAND_GRADIENT_HOVER },
+          '&.Mui-disabled': { background: dark ? IRON : '#E4E4E7', color: dark ? SMOKE : ASH },
+        },
+        outlinedPrimary: dark ? {} : { color: GOLD_DEEP, borderColor: alpha(GOLD_DARK, 0.5) },
+        textPrimary: dark ? {} : { color: GOLD_DEEP },
+      },
     },
-    success:  { main: SUCCESS },
-    info:     { main: CYAN },
-    background: {
-      default: '#F5F7FA',
-      paper:   '#FFFFFF',
-    },
-    text: {
-      primary:   NAVY_DARK,
-      secondary: GRAY_MID,
-    },
-    divider: alpha(NAVY, 0.08),
-  },
-  components: baseComponents,
-});
-
-// ─── Dark Theme ────────────────────────────────────────────────────────────
-export const darkTheme = createTheme({
-  ...baseShape,
-  ...baseTypography,
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: PURPLE,
-      light: alpha(PURPLE, 0.2),
-      dark: PURPLE_DARK,
-      contrastText: '#fff',
-    },
-    secondary: {
-      main: CYAN,
-      dark: '#009FCF',
-      contrastText: '#fff',
-    },
-    success:  { main: SUCCESS },
-    info:     { main: CYAN },
-    background: {
-      default: '#0B0F1A',
-      paper:   '#111827',
-    },
-    text: {
-      primary:   '#FFFFFF',
-      secondary: GRAY_MID,
-    },
-    divider: alpha('#fff', 0.06),
-  },
-  components: {
-    ...baseComponents,
     MuiCard: {
       styleOverrides: {
         root: {
           borderRadius: 16,
-          boxShadow: 'none',
-          border: `1px solid ${alpha('#fff', 0.06)}`,
-          background: '#111827',
+          backgroundImage: 'none',
+          border: `1px solid ${border}`,
+          boxShadow: dark ? 'none' : '0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04)',
         },
       },
     },
-    MuiPaper: {
+    MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
+    MuiChip: {
       styleOverrides: {
-        root: { backgroundImage: 'none' },
+        root: { borderRadius: 8, fontWeight: 600 },
+        colorPrimary: { color: INK },
       },
     },
+    MuiTextField: {
+      styleOverrides: { root: { '& .MuiOutlinedInput-root': { borderRadius: 10 } } },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: GOLD },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: { root: { '&.Mui-focused': { color: dark ? GOLD : GOLD_DEEP } } },
+    },
+    MuiLinearProgress: {
+      styleOverrides: {
+        root: { borderRadius: 8, backgroundColor: dark ? IRON : '#E4E4E7' },
+        bar: { borderRadius: 8 },
+      },
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: { backgroundColor: dark ? '#FAFAFA' : INK, color: dark ? INK : '#FAFAFA', fontWeight: 500, fontSize: 12 },
+      },
+    },
+    MuiAppBar: { styleOverrides: { root: { backgroundImage: 'none' } } },
+    MuiTab: { styleOverrides: { root: { textTransform: 'none', fontWeight: 600 } } },
+    MuiTabs: { styleOverrides: { indicator: { backgroundColor: GOLD, height: 3, borderRadius: 3 } } },
+    MuiSwitch: {
+      styleOverrides: {
+        switchBase: { '&.Mui-checked': { color: GOLD, '& + .MuiSwitch-track': { backgroundColor: GOLD } } },
+      },
+    },
+  };
+}
+
+// ─── Light Theme ───────────────────────────────────────────────────────────
+export const lightTheme = createTheme({
+  shape: { borderRadius: 12 },
+  typography,
+  palette: {
+    mode: 'light',
+    primary: { main: GOLD_DARK, light: GOLD_LIGHT, dark: GOLD_DEEP, contrastText: INK },
+    secondary: { main: INK, light: IRON, dark: '#000000', contrastText: '#FFFFFF' },
+    success: { main: SUCCESS },
+    error: { main: ERROR },
+    warning: { main: WARNING },
+    info: { main: INFO },
+    background: { default: IVORY, paper: PAPER },
+    text: { primary: '#111113', secondary: SMOKE, disabled: ASH },
+    divider: alpha('#000000', 0.08),
   },
+  components: buildComponents('light'),
 });
+
+// ─── Dark Theme ────────────────────────────────────────────────────────────
+export const darkTheme = createTheme({
+  shape: { borderRadius: 12 },
+  typography,
+  palette: {
+    mode: 'dark',
+    primary: { main: GOLD, light: GOLD_LIGHT, dark: GOLD_DARK, contrastText: INK },
+    secondary: { main: '#E4E4E7', light: '#FFFFFF', dark: ASH, contrastText: INK },
+    success: { main: SUCCESS },
+    error: { main: ERROR },
+    warning: { main: WARNING },
+    info: { main: INFO },
+    background: { default: INK, paper: CARBON },
+    text: { primary: '#F5F5F4', secondary: ASH, disabled: SMOKE },
+    divider: alpha('#FFFFFF', 0.08),
+    action: { hover: alpha('#FFFFFF', 0.05), selected: alpha(GOLD, 0.12) },
+  },
+  components: buildComponents('dark'),
+});
+
