@@ -5,14 +5,13 @@ import {
   Box, Card, CardContent, Typography, Button, Stepper, Step, StepLabel,
   CircularProgress, Alert, Chip, alpha, useTheme, TextField, Paper,
   Grid, MenuItem, Divider, Accordion, AccordionSummary, AccordionDetails,
-  ToggleButton, ToggleButtonGroup, FormControlLabel, Switch, Autocomplete, Link,
+  ToggleButton, ToggleButtonGroup, Autocomplete, Link, Pagination,
 } from '@mui/material';
 import { CloudUpload, CheckCircle, ExpandMore, Delete, AutoAwesome, ArrowBack, LibraryBooks } from '@mui/icons-material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { questionExtractApi, questionBankApi, subjectApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthStore } from '@/store/auth.store';
 import { LEVEL_LABEL } from '@/components/questions/types';
 import RichTextField from '@/components/common/RichTextField';
 import AssuntoPicker from '@/components/questions/AssuntoPicker';
@@ -31,12 +30,14 @@ const FORMAT_COLORS: Record<string, string> = {
   simple: '#F59E0B', commented: '#10B981', inline: '#3B82F6', certo_errado: '#F2B705', unknown: '#9CA3AF',
 };
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+// PDFs com milhares de questões: a revisão mostra uma página por vez
+const PAGE_SIZE = 50;
 const OK = '#10B981';
 const PENDING = '#F59E0B';
 
 type Meta = {
   subjectId: string; assuntoId: number | null; discipline: string; topic: string; banca: string; orgao: string;
-  cargo: string; year: string; level: string; source: string; isPublic: boolean;
+  cargo: string; year: string; level: string; source: string;
 };
 
 function ImportarContent() {
@@ -45,7 +46,6 @@ function ImportarContent() {
   const sp = useSearchParams();
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-  const isAdmin = useAuthStore((s) => s.user?.role === 'ADMIN');
   const gold = theme.palette.primary.main;
 
   const [step, setStep] = useState(0);
@@ -55,11 +55,13 @@ function ImportarContent() {
   const [texts, setTexts] = useState<ImportText[]>([]);
   const [rejected, setRejected] = useState<{ number: number; error: string }[]>([]);
   const [savedCount, setSavedCount] = useState(0);
+  const [duplicates, setDuplicates] = useState(0);
+  const [page, setPage] = useState(1);
   // Vindo do catálogo de provas, os metadados chegam pela URL
   const [meta, setMeta] = useState<Meta>(() => ({
     subjectId: '', assuntoId: null, discipline: '', topic: '',
     banca: sp.get('banca') || '', orgao: sp.get('orgao') || '', cargo: sp.get('cargo') || '',
-    year: sp.get('year') || '', level: '', source: sp.get('source') || '', isPublic: isAdmin,
+    year: sp.get('year') || '', level: '', source: sp.get('source') || '',
   }));
   const fromCatalog = Boolean(sp.get('source'));
   const [manualAssunto, setManualAssunto] = useState(false);
@@ -86,7 +88,16 @@ function ImportarContent() {
       setQuestions(d.questions);
       setTexts((d.texts || []).map((t: any) => ({ key: t.key, title: t.title || '', body: t.body || '', source: t.source || '' })));
       setFormat(d.format);
+      // Banca/ano da capa do PDF só preenchem o formulário quando as questões não trazem os seus
+      const dm = d.documentMeta || {};
+      const lacking = (k: string) => d.questions.filter((q: any) => !q[k]).length >= d.questions.length * 0.8;
+      setMeta((m) => ({
+        ...m,
+        banca: m.banca || (dm.banca && lacking('banca') ? dm.banca : ''),
+        year: m.year || (dm.year && lacking('year') ? String(dm.year) : ''),
+      }));
       setStep(1);
+      setPage(1);
       toast.success(`${d.total} questões detectadas! Formato: ${FORMAT_LABELS[d.format] || d.format}`);
     },
     onError: (err: any) => {
@@ -111,7 +122,6 @@ function ImportarContent() {
         level: meta.level || null,
         year: meta.year ? parseInt(meta.year) : null,
         source: meta.source || null,
-        isPublic: isAdmin && meta.isPublic,
         texts,
       });
     },
@@ -119,6 +129,7 @@ function ImportarContent() {
       const d = res.data.data;
       setRejected(d.errors || []);
       setSavedCount(d.created);
+      setDuplicates(d.duplicates || 0);
       if (!d.created) {
         toast.error('Nenhuma questão salva. Corrija os itens destacados.');
         return;
@@ -143,6 +154,11 @@ function ImportarContent() {
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
   };
+
+  const pageCount = Math.max(1, Math.ceil(questions.length / PAGE_SIZE));
+  const curPage = Math.min(page, pageCount); // remover questões pode encolher a última página
+  const pageStart = (curPage - 1) * PAGE_SIZE;
+  const pendingCount = questions.filter((q) => !q.answer).length;
 
   const removeQuestion = (idx: number) => setQuestions(qs => qs.filter((_, i) => i !== idx));
   const updateQuestion = (idx: number, field: string, value: any) => {
@@ -343,10 +359,11 @@ function ImportarContent() {
                 <TextField size="small" fullWidth label="Fonte / Prova" value={meta.source} onChange={e => setM('source', e.target.value)} />
               </Grid>
             </Grid>
-            {isAdmin && (
-              <FormControlLabel sx={{ mt: 1.5 }} control={<Switch checked={meta.isPublic} onChange={e => setM('isPublic', e.target.checked)} />}
-                label={<Typography variant="body2"><strong>Publicar no banco</strong> para todos os alunos</Typography>} />
-            )}
+            <Alert severity="info" sx={{ mt: 1.5 }}>
+              As questões importadas vão para o <strong>banco compartilhado</strong>: todos os alunos terão acesso.
+              Questões que já estão no banco não são duplicadas. As que não têm matéria são classificadas
+              automaticamente pelo texto (ou ficam para a curadoria).
+            </Alert>
           </CardContent>
         </Card>
 
@@ -392,18 +409,35 @@ function ImportarContent() {
           </Alert>
         )}
 
+        {pageCount > 1 && (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, mb: 1.5 }}>
+            <Typography variant="body2" color="text.secondary">
+              Questões {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, questions.length)} de {questions.length}
+              {pendingCount > 0 && ` · ${pendingCount} sem gabarito`}
+            </Typography>
+            <Pagination count={pageCount} page={curPage} shape="rounded" color="primary" size="small" onChange={(_, p) => setPage(p)} />
+          </Box>
+        )}
+
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
-          {questions.map((q, idx) => {
+          {questions.slice(pageStart, pageStart + PAGE_SIZE).map((q, i) => {
+            const idx = pageStart + i;
             const isCE = q.type === 'CERTO_ERRADO';
             const letters = OPTION_LETTERS.filter(l => isCE ? false : (l !== 'E' || q.options?.E !== null));
             return (
-              <Accordion key={idx} disableGutters elevation={0}
+              <Accordion key={idx} disableGutters elevation={0} slotProps={{ transition: { unmountOnExit: true } }}
                 sx={{ border: `1px solid ${q.answer ? alpha(OK, 0.35) : alpha(PENDING, 0.45)}`, borderRadius: '12px !important', '&:before': { display: 'none' } }}>
                 <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 2, minHeight: 56 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', pr: 1, overflow: 'hidden' }}>
                     <Chip label={`Q${q.number}`} size="small" sx={{ minWidth: 40, flexShrink: 0, fontWeight: 700, bgcolor: alpha(gold, 0.14) }} />
                     {isCE && <Chip label="C/E" size="small" variant="outlined" sx={{ flexShrink: 0, height: 22 }} />}
                     {q.textKey && <Chip label={textTitle(q.textKey)} size="small" color="primary" variant="outlined" sx={{ flexShrink: 0, height: 22 }} />}
+                    {q.annulled && <Chip label="Anulada" size="small" color="warning" variant="outlined" sx={{ flexShrink: 0, height: 22 }} />}
+                    {(q.discipline || q.suggested) && (
+                      <Chip label={q.discipline || q.suggested} size="small" variant="outlined"
+                        title={q.discipline ? 'Matéria indicada no PDF' : 'Matéria reconhecida pelo texto da questão'}
+                        sx={{ flexShrink: 1, minWidth: 0, maxWidth: 220, height: 22, display: { xs: 'none', md: 'flex' }, borderStyle: q.discipline ? 'solid' : 'dashed' }} />
+                    )}
                     {(q.banca || q.year) && (
                       <Chip label={[q.banca, q.year].filter(Boolean).join(' · ')} size="small" variant="outlined"
                         sx={{ flexShrink: 0, height: 22, display: { xs: 'none', sm: 'flex' } }} />
@@ -472,12 +506,19 @@ function ImportarContent() {
           })}
         </Box>
 
+        {pageCount > 1 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <Pagination count={pageCount} page={curPage} shape="rounded" color="primary"
+              onChange={(_, p) => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
+          </Box>
+        )}
+
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           <Button variant="outlined" onClick={() => setStep(0)} sx={{ flex: { xs: '1 1 100%', sm: 'none' } }}>Voltar</Button>
           <Button variant="contained" sx={{ px: 4, flex: { xs: '1 1 100%', sm: 'none' } }}
             onClick={() => confirmMutation.mutate()}
             disabled={confirmMutation.isPending || questions.length === 0}>
-            {confirmMutation.isPending ? <CircularProgress size={20} color="inherit" /> : isAdmin && meta.isPublic ? `Publicar ${questions.length} questões` : `Salvar ${questions.length} questões`}
+            {confirmMutation.isPending ? <CircularProgress size={20} color="inherit" /> : `Publicar ${questions.length} questões`}
           </Button>
         </Box>
       </Box>
@@ -495,7 +536,8 @@ function ImportarContent() {
           <CheckCircle sx={{ fontSize: 72, color: OK, mb: 2 }} />
           <Typography variant="h5" fontWeight={800}>Questões importadas!</Typography>
           <Typography color="text.secondary" sx={{ mt: 1, mb: rejected.length ? 1 : 3 }}>
-            {savedCount} questões salvas {isAdmin && meta.isPublic ? 'e publicadas no banco' : 'e prontas para praticar'}
+            {savedCount} questões publicadas no banco compartilhado
+            {duplicates > 0 && ` (${duplicates} já estavam no banco e não foram repetidas)`}
           </Typography>
           {rejected.length > 0 && (
             <Typography variant="body2" color="warning.main" sx={{ mb: 3 }}>{rejected.length} ignorada(s) por dados incompletos.</Typography>

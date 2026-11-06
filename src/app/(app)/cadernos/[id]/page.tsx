@@ -25,6 +25,7 @@ const OK = '#22C55E';
 const BAD = '#EF4444';
 type Filter = 'all' | 'pending' | 'right' | 'wrong';
 type TabKey = 'resolver' | 'indice' | 'estatisticas' | 'gabarito' | 'diagnostico';
+type LiveResult = { isCorrect: boolean; selected: string; correctAnswer: string | null; explanation?: string | null };
 
 export default function CadernoPage() {
   const { id } = useParams<{ id: string }>();
@@ -37,7 +38,7 @@ export default function CadernoPage() {
   const [filter, setFilter] = useState<Filter>('all');
   const [current, setCurrent] = useState<string | null>(null);
   // Resultado das respostas desta sessão (sobrepõe o que veio do servidor)
-  const [live, setLive] = useState<Record<string, boolean>>({});
+  const [live, setLive] = useState<Record<string, LiveResult>>({});
   const [menu, setMenu] = useState<HTMLElement | null>(null);
   const [confirm, setConfirm] = useState<'reset' | 'delete' | null>(null);
   const [busy, setBusy] = useState(false);
@@ -53,9 +54,9 @@ export default function CadernoPage() {
     enabled: tab === 'diagnostico' || tab === 'estatisticas',
   });
 
-  const questions: (BankQuestion & { notebookAttempt?: { isCorrect: boolean } | null })[] = useMemo(() => nb?.questions || [], [nb]);
+  const questions: (BankQuestion & { notebookAttempt?: { selected: string; isCorrect: boolean } | null })[] = useMemo(() => nb?.questions || [], [nb]);
   const statusOf = (q: (typeof questions)[number]): 'right' | 'wrong' | 'pending' => {
-    const v = q.id in live ? live[q.id] : q.notebookAttempt?.isCorrect;
+    const v = q.id in live ? live[q.id].isCorrect : q.notebookAttempt?.isCorrect;
     return v === undefined || v === null ? 'pending' : v ? 'right' : 'wrong';
   };
   const visible = questions.filter((q) => filter === 'all' || statusOf(q) === filter);
@@ -66,8 +67,17 @@ export default function CadernoPage() {
   const answered = counts.right + counts.wrong;
   const accuracy = answered ? Math.round((counts.right / answered) * 100) : null;
 
-  const currentIdx = Math.max(0, visible.findIndex((q) => q.id === current));
+  // Ao voltar ao caderno, continua da primeira questão ainda não resolvida
+  const resumeId = (visible.find((x) => statusOf(x) === 'pending') ?? visible[0])?.id ?? null;
+  const currentIdx = Math.max(0, visible.findIndex((x) => x.id === (current ?? resumeId)));
   const q = visible[currentIdx];
+  // Questão já resolvida neste caderno abre com a resposta dada, sem pedir para responder de novo
+  const previousResult = (x: (typeof questions)[number]) => {
+    const l = live[x.id];
+    if (l) return { selected: l.selected, correctAnswer: l.correctAnswer, explanation: l.explanation };
+    if (!x.notebookAttempt) return null;
+    return { selected: x.notebookAttempt.selected, correctAnswer: x.answer ?? null, explanation: x.explanation ?? null };
+  };
 
   const go = (delta: number) => {
     const next = visible[currentIdx + delta];
@@ -81,9 +91,9 @@ export default function CadernoPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const onAnswered = (qid: string) => (r: AnswerResult) => {
+  const onAnswered = (qid: string) => (r: AnswerResult, selected: string) => {
     const wasPending = statusOf(questions.find((x) => x.id === qid)!) === 'pending';
-    setLive((s) => ({ ...s, [qid]: r.isCorrect }));
+    setLive((s) => ({ ...s, [qid]: { isCorrect: r.isCorrect, selected, correctAnswer: r.correctAnswer, explanation: r.explanation } }));
     setStreak((n) => (r.isCorrect ? n + 1 : 0));
     qc.invalidateQueries({ queryKey: ['notebooks', 'diagnosis', id] });
     // Última pendente respondida: abre o diagnóstico
@@ -213,7 +223,8 @@ export default function CadernoPage() {
             </Card>
             {q ? (
               <>
-                <QuestionCard key={q.id} question={q} index={questions.indexOf(q) + 1} notebookId={id} onAnswered={onAnswered(q.id)} />
+                <QuestionCard key={q.id} question={q} index={questions.indexOf(q) + 1} notebookId={id}
+                  reviewResult={previousResult(q)} onAnswered={onAnswered(q.id)} />
                 <Box sx={{ display: 'flex', gap: 1.5, mt: 2, alignItems: 'center', flexWrap: 'wrap' }}>
                   <Button startIcon={<ArrowBack />} disabled={currentIdx === 0} onClick={() => go(-1)}>Anterior</Button>
                   <Tooltip title="Remover esta questão do caderno">

@@ -5,7 +5,7 @@ import {
   CircularProgress, alpha, useTheme, Paper, Alert,
   List, ListItem, ListItemText, IconButton, TextField,
   Divider, Dialog, DialogTitle, DialogContent, DialogActions,
-  FormControl, InputLabel, Select, MenuItem, Tooltip,
+  FormControl, InputLabel, Select, MenuItem, Tooltip, Pagination,
 } from '@mui/material';
 import {
   UploadFile, AutoAwesome, CheckCircle, Edit, Delete,
@@ -25,6 +25,18 @@ interface FlashcardPair {
   source?: string;
 }
 
+// Como o PDF foi lido (o backend testa todos os formatos e fica com o que rende mais)
+const MODE_LABEL: Record<string, string> = {
+  questoes: 'Questões com gabarito → enunciado na frente, resposta e comentário no verso',
+  rotulado: 'Frente/Verso, Pergunta/Resposta ou Q/A',
+  numerado: 'Perguntas numeradas com "R:"',
+  resposta: 'Pergunta seguida de "R:"',
+  glossario: 'Glossário (termo: definição)',
+  blocos: 'Blocos separados por linha em branco',
+  linhas: 'Linhas alternadas',
+};
+const PAGE_SIZE = 60;
+
 export default function FlashcardImportPage() {
   const theme = useTheme();
   const router = useRouter();
@@ -37,6 +49,11 @@ export default function FlashcardImportPage() {
   const [editBack, setEditBack] = useState('');
   const [subjectId, setSubjectId] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  const [mode, setMode] = useState('');
+  const [page, setPage] = useState(1);
+  const pageCount = Math.max(1, Math.ceil(pairs.length / PAGE_SIZE));
+  const curPage = Math.min(page, pageCount);
+  const pageStart = (curPage - 1) * PAGE_SIZE;
 
   const { data: subjects = [] } = useQuery({
     queryKey: ['subjects'],
@@ -52,6 +69,8 @@ export default function FlashcardImportPage() {
     onSuccess: (data) => {
       const extracted: FlashcardPair[] = data.data.data.pairs || [];
       setPairs(extracted);
+      setMode(data.data.data.mode || '');
+      setPage(1);
       setStep('review');
       toast.success(`${extracted.length} flashcards detectados!`);
     },
@@ -168,7 +187,7 @@ export default function FlashcardImportPage() {
                         Arraste o PDF de flashcards aqui
                       </Typography>
                       <Typography color="text.secondary" sx={{ mt: 1, mb: 3 }}>
-                        ou clique para selecionar (máx. 30MB)
+                        ou clique para selecionar (máx. 200MB)
                       </Typography>
                       <Button
                         variant="contained"
@@ -204,8 +223,16 @@ export default function FlashcardImportPage() {
                     example: '1. O QUE SÃO DIREITOS HUMANOS?\nR: CONJUNTO DE DIREITOS INDISPENSÁVEIS...',
                   },
                   {
-                    label: 'Formato Q/A',
-                    example: 'Q: O que é tributo?\nA: Prestação compulsória em dinheiro...',
+                    label: 'Formato Q/A ou Frente/Verso',
+                    example: 'Q: O que é tributo?\nA: Prestação compulsória em dinheiro...\n\nFrente: Princípio da legalidade\nVerso: Só se faz o que a lei permite',
+                  },
+                  {
+                    label: 'Glossário / resumo',
+                    example: 'Autarquia: pessoa jurídica de direito público...\nFundação pública – patrimônio personalizado...',
+                  },
+                  {
+                    label: 'PDF de questões com gabarito',
+                    example: '1) Enunciado...\na) ... b) ... c) ...\nGabarito: C\n\n→ frente: questão · verso: resposta + comentário',
                   },
                   {
                     label: 'Blocos alternados',
@@ -247,6 +274,7 @@ export default function FlashcardImportPage() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <CheckCircle sx={{ color: '#10B981' }} />
                   <Typography fontWeight={700}>{pairs.length} flashcards detectados</Typography>
+                  {MODE_LABEL[mode] && <Chip size="small" variant="outlined" label={MODE_LABEL[mode]} sx={{ maxWidth: 420 }} />}
                 </Box>
 
                 <FormControl size="small" sx={{ minWidth: 200 }}>
@@ -296,7 +324,9 @@ export default function FlashcardImportPage() {
 
           {/* Lista de pares */}
           <Grid container spacing={2}>
-            {pairs.map((pair, idx) => (
+            {pairs.slice(pageStart, pageStart + PAGE_SIZE).map((pair, i) => {
+              const idx = pageStart + i;
+              return (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={idx}>
                 <Card
                   sx={{
@@ -311,7 +341,10 @@ export default function FlashcardImportPage() {
                       <Typography variant="caption" color="text.secondary" fontWeight={600}>
                         PERGUNTA
                       </Typography>
-                      <Typography variant="body2" sx={{ mt: 0.5, minHeight: 40 }}>
+                      <Typography variant="body2" sx={{
+                        mt: 0.5, minHeight: 40, whiteSpace: 'pre-line',
+                        display: '-webkit-box', WebkitLineClamp: 9, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                      }}>
                         {pair.front || <em style={{ color: '#9CA3AF' }}>Vazio</em>}
                       </Typography>
                     </Box>
@@ -359,8 +392,15 @@ export default function FlashcardImportPage() {
                   </CardContent>
                 </Card>
               </Grid>
-            ))}
+              );
+            })}
           </Grid>
+          {pageCount > 1 && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Pagination count={pageCount} page={curPage} shape="rounded" color="primary"
+                onChange={(_, p) => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
+            </Box>
+          )}
         </Box>
       )}
 

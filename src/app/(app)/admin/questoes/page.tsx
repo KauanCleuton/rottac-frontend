@@ -39,8 +39,9 @@ export default function AdminQuestoesPage() {
     enabled: isAdmin,
   });
 
+  // manage=1: o painel também enxerga as questões ocultas do banco
   const params = {
-    page, limit: PAGE_SIZE,
+    page, limit: PAGE_SIZE, manage: '1',
     ...(appliedSearch && { search: appliedSearch }),
     ...(scope !== 'all' && { scope }),
     ...(missing && { missing }),
@@ -73,8 +74,20 @@ export default function AdminQuestoesPage() {
     }
   };
 
+  const togglePublic = async (q: BankQuestion) => {
+    try {
+      await questionBankApi.update(q.id, { isPublic: !q.isPublic });
+      toast.success(q.isPublic ? 'Questão ocultada do banco' : 'Questão publicada no banco');
+      qc.invalidateQueries({ queryKey: ['question-bank'] });
+      qc.invalidateQueries({ queryKey: ['question-bank-filters'] });
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || 'Erro ao atualizar');
+    }
+  };
+
   const tiles = [
     { l: 'Questões públicas', v: overview?.publicCount, hint: 'no banco Rotta' },
+    { l: 'Ocultas', v: overview?.hiddenCount, hint: 'fora do banco (só aqui)' },
     { l: 'Questões privadas', v: overview?.privateCount, hint: 'criadas por alunos' },
     { l: 'Respostas', v: overview?.attempts, hint: 'tentativas registradas' },
     { l: 'Comentários', v: overview?.comments, hint: 'da comunidade' },
@@ -100,7 +113,7 @@ export default function AdminQuestoesPage() {
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         {tiles.map((t) => (
-          <Grid key={t.l} size={{ xs: 6, md: 3 }}>
+          <Grid key={t.l} size={{ xs: 6, sm: 4, md: 2.4 }}>
             <Card>
               <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
                 <Typography variant="overline" color="text.secondary" sx={{ fontSize: 10 }}>{t.l}</Typography>
@@ -134,6 +147,7 @@ export default function AdminQuestoesPage() {
               sx={{ flexGrow: 1, minWidth: 220 }} />
             <ToggleButtonGroup size="small" exclusive value={scope} onChange={(_, v) => { if (v) { setScope(v); setPage(1); } }}>
               <ToggleButton value="public">Públicas</ToggleButton>
+              <ToggleButton value="hidden">Ocultas</ToggleButton>
               <ToggleButton value="mine">Minhas</ToggleButton>
               <ToggleButton value="all">Todas</ToggleButton>
             </ToggleButtonGroup>
@@ -191,8 +205,10 @@ export default function AdminQuestoesPage() {
                     </TableCell>
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
-                        <Tooltip title={q.isPublic ? 'Pública' : 'Privada'}>
-                          {q.isPublic ? <Public fontSize="small" sx={{ color: 'primary.main' }} /> : <Lock fontSize="small" color="disabled" />}
+                        <Tooltip title={q.isPublic ? 'Pública — clique para ocultar do banco' : 'Oculta — clique para publicar no banco'}>
+                          <IconButton size="small" onClick={() => togglePublic(q)} aria-label={q.isPublic ? 'Ocultar do banco' : 'Publicar no banco'} sx={{ p: 0.25 }}>
+                            {q.isPublic ? <Public fontSize="small" sx={{ color: 'primary.main' }} /> : <Lock fontSize="small" color="disabled" />}
+                          </IconButton>
                         </Tooltip>
                         {q.isAnnulled && <Chip size="small" label="Anulada" color="error" variant="outlined" sx={{ height: 20, fontSize: 10 }} />}
                         {q.isOutdated && <Chip size="small" label="Desatual." color="warning" variant="outlined" sx={{ height: 20, fontSize: 10 }} />}

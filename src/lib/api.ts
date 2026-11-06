@@ -346,8 +346,8 @@ export const editalApi = {
 
 export const flashcardExtractApi = {
   preview: (data: FormData) =>
-    api.post('/flashcards/extract/preview', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  confirm: (data: any) => api.post('/flashcards/extract/confirm', data),
+    api.post('/flashcards/extract/preview', data, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 300000 }),
+  confirm: (data: any) => api.post('/flashcards/extract/confirm', data, { timeout: 300000 }),
 };
 
 export const postSimuladoApi = {
@@ -363,8 +363,9 @@ export const dailyChallengeApi = {
 
 export const questionExtractApi = {
   preview: (data: FormData) =>
-    api.post('/question-extract/preview', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  confirm: (data: any) => api.post('/question-extract/confirm', data),
+    // PDFs grandes (150+ páginas) levam mais de 30s para ler
+    api.post('/question-extract/preview', data, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 300000 }),
+  confirm: (data: any) => api.post('/question-extract/confirm', data, { timeout: 300000 }),
   list: (params?: any) => api.get('/question-extract/list', { params }),
   answer: (id: string, data: any) => api.post(`/question-extract/${id}/answer`, data),
 };

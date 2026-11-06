@@ -8,106 +8,22 @@ import {
   Box, Drawer, List, ListItem, ListItemButton, ListItemIcon,
   ListItemText, Toolbar, AppBar, IconButton, Typography,
   Avatar, Badge, Chip, Divider, Tooltip, useTheme, alpha, useMediaQuery,
-  Menu, MenuItem, Button,
+  Menu, MenuItem, Button, Tabs, Tab,
 } from '@mui/material';
 import {
-  Dashboard, School, CalendarMonth, FlashOn, MenuBook,
-  QuestionAnswer, Notes, AccountTree, PictureAsPdf,
-  EmojiEvents, TrackChanges, SelfImprovement, FitnessCenter,
-  Analytics, Notifications, DarkMode, LightMode, Menu as MenuIcon,
-  ChevronLeft, Bolt, Person, GolfCourse, Quiz, Logout,
-  Psychology, Article, SupervisorAccount, LocalFireDepartment,
-  FileUpload, AutoStories, School as SchoolIcon, Group, Assignment, RateReview,
-  TravelExplore, LibraryBooks, PostAdd, AdminPanelSettings, Timer, SettingsBrightness,
-  PlayArrow, Check, CollectionsBookmark, EventRepeat, Insights, PointOfSale, Sell, WorkspacePremium, OutlinedFlag,
-  TrendingUp, Leaderboard, Checklist, Loop, Gavel, FactCheck,
+  Notifications, DarkMode, LightMode, Menu as MenuIcon, ChevronLeft, Bolt, Logout,
+  School as SchoolIcon, AdminPanelSettings, SettingsBrightness, Check,
 } from '@mui/icons-material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore, type ThemeMode } from '@/store/auth.store';
 import { useQuery } from '@tanstack/react-query';
-import { gamificationApi, notificationApi, questionBankApi, adminApi } from '@/lib/api';
+import { gamificationApi, notificationApi, questionBankApi, adminApi, billingApi } from '@/lib/api';
 import { useIsDark } from '@/hooks/useIsDark';
 import Logo, { LogoMark } from '@/components/brand/Logo';
+import { studentSections, adminSection, teacherSections, locate, type NavSection, type NavTab } from './navSections';
 
-const DRAWER_WIDTH = 264;
-
-type NavItem =
-  | { divider: true; label: string }
-  | { label: string; icon: React.ReactNode; href: string; highlight?: boolean; badgeKey?: 'review' | 'reports' };
-
-const studentNavItems: NavItem[] = [
-  { label: 'Hoje', icon: <Dashboard />, href: '/dashboard' },
-  { divider: true, label: 'Questões' },
-  { label: 'Banco de Questões', icon: <LibraryBooks />, href: '/questoes/banco', highlight: true },
-  { label: 'Cadernos de Questões', icon: <CollectionsBookmark />, href: '/cadernos' },
-  { label: 'Revisão de Questões', icon: <EventRepeat />, href: '/questoes/revisao', badgeKey: 'review' },
-  { label: 'O que mais cai', icon: <TrendingUp />, href: '/questoes/mais-cai' },
-  { label: 'Simulados com Ranking', icon: <Leaderboard />, href: '/simulados' },
-  { label: 'Treino e Simulado', icon: <Timer />, href: '/questoes/praticar' },
-  { label: 'Provas Anteriores', icon: <TravelExplore />, href: '/provas' },
-  { label: 'Criar Questão', icon: <PostAdd />, href: '/questoes/nova' },
-  { label: 'Importar de PDF', icon: <FileUpload />, href: '/questoes/importar' },
-  { label: 'Simulado por Gabarito', icon: <Quiz />, href: '/simulado' },
-  { label: 'Registro de Desempenho', icon: <QuestionAnswer />, href: '/questoes' },
-  { divider: true, label: 'Inteligência' },
-  { label: 'Central de IA', icon: <Psychology />, href: '/inteligencia' },
-  { label: 'Importar Edital', icon: <Article />, href: '/edital' },
-  { label: 'Mentoria', icon: <SupervisorAccount />, href: '/mentoria' },
-  { divider: true, label: 'Estudo' },
-  { label: 'Edital Verticalizado', icon: <Checklist />, href: '/edital-verticalizado' },
-  { label: 'Ciclo de Estudos', icon: <Loop />, href: '/ciclo' },
-  { label: 'Lei Seca', icon: <Gavel />, href: '/lei-seca' },
-  { label: 'Meu Concurso', icon: <GolfCourse />, href: '/concurso' },
-  { label: 'Disciplinas', icon: <School />, href: '/disciplinas' },
-  { label: 'Plano de Estudos', icon: <CalendarMonth />, href: '/plano' },
-  { label: 'Modo Foco', icon: <SelfImprovement />, href: '/foco' },
-  { divider: true, label: 'Revisão' },
-  { label: 'Desafio Diário', icon: <LocalFireDepartment />, href: '/desafio' },
-  { label: 'Flashcards', icon: <FlashOn />, href: '/flashcards' },
-  { label: 'Importar Flashcards', icon: <FileUpload />, href: '/flashcards/importar' },
-  { label: 'Caderno de Erros', icon: <MenuBook />, href: '/caderno-erros' },
-  { label: 'Anotações', icon: <Notes />, href: '/anotacoes' },
-  { label: 'Mapas Mentais', icon: <AccountTree />, href: '/mapas-mentais' },
-  { label: 'PDFs', icon: <PictureAsPdf />, href: '/pdfs' },
-  { divider: true, label: 'Redação' },
-  { label: 'Minhas Redações', icon: <AutoStories />, href: '/redacao' },
-  { label: 'Nova Redação', icon: <PlayArrow />, href: '/redacao/nova' },
-  { divider: true, label: 'Progresso' },
-  { label: 'Metas', icon: <TrackChanges />, href: '/metas' },
-  { label: 'Hábitos', icon: <FitnessCenter />, href: '/habitos' },
-  { label: 'Analytics', icon: <Analytics />, href: '/analytics' },
-  { label: 'Gamificação', icon: <EmojiEvents />, href: '/gamificacao' },
-];
-
-const adminNavItems: NavItem[] = [
-  { divider: true, label: 'Administração' },
-  { label: 'Painel Geral', icon: <Insights />, href: '/admin' },
-  { label: 'Alunos', icon: <Group />, href: '/admin/alunos' },
-  { label: 'Vendas e Assinaturas', icon: <PointOfSale />, href: '/admin/vendas' },
-  { label: 'Planos, Cupons e Promoções', icon: <Sell />, href: '/admin/planos' },
-  { label: 'Gerenciar Questões', icon: <AdminPanelSettings />, href: '/admin/questoes' },
-  { label: 'Curadoria de Questões', icon: <FactCheck />, href: '/admin/curadoria' },
-  { label: 'Simulados com Ranking', icon: <Leaderboard />, href: '/admin/simulados' },
-  { label: 'Leis (Lei Seca)', icon: <Gavel />, href: '/admin/lei-seca' },
-  { label: 'Reportes de Questões', icon: <OutlinedFlag />, href: '/admin/reportes', badgeKey: 'reports' },
-];
-
-const accountNavItems: NavItem[] = [
-  { divider: true, label: 'Conta' },
-  { label: 'Planos', icon: <WorkspacePremium />, href: '/planos' },
-  { label: 'Meu Perfil', icon: <Person />, href: '/perfil' },
-];
-
-const teacherNavItems: NavItem[] = [
-  { label: 'Dashboard', icon: <Dashboard />, href: '/professor' },
-  { divider: true, label: 'Alunos' },
-  { label: 'Meus Alunos', icon: <Group />, href: '/professor/alunos' },
-  { divider: true, label: 'Redações' },
-  { label: 'Todas as Redações', icon: <Assignment />, href: '/professor/redacoes' },
-  { divider: true, label: 'Ferramentas' },
-  { label: 'Templates de Feedback', icon: <RateReview />, href: '/professor/templates' },
-];
+const DRAWER_WIDTH = 248;
 
 const THEME_OPTIONS: { mode: ThemeMode; label: string; icon: React.ReactNode }[] = [
   { mode: 'light', label: 'Claro', icon: <LightMode fontSize="small" /> },
@@ -115,14 +31,43 @@ const THEME_OPTIONS: { mode: ThemeMode; label: string; icon: React.ReactNode }[]
   { mode: 'system', label: 'Seguir o sistema', icon: <SettingsBrightness fontSize="small" /> },
 ];
 
-// Item ativo = o href mais específico que casa com a rota (evita /questoes acender em /questoes/banco)
-function activeHref(pathname: string, items: NavItem[]) {
-  let best = '';
-  for (const item of items) {
-    if ('divider' in item) continue;
-    if ((pathname === item.href || pathname.startsWith(item.href + '/')) && item.href.length > best.length) best = item.href;
-  }
-  return best;
+// Abas e ações da seção atual, no topo do conteúdo (o que antes eram itens do menu)
+function SectionTabs({ section, tab, badges }: { section: NavSection; tab: NavTab | null; badges: Record<string, number> }) {
+  const theme = useTheme();
+  const tabs = section.tabs || [];
+  const actions = section.actions || [];
+  if (tabs.length < 2 && !actions.length) return null;
+  return (
+    <Box sx={{
+      display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', mb: { xs: 2, md: 3 },
+      borderBottom: tabs.length > 1 ? `1px solid ${theme.palette.divider}` : 'none',
+    }}>
+      {tabs.length > 1 ? (
+        <Tabs value={tab?.href ?? false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile
+          sx={{ flex: '1 1 320px', minWidth: 0, minHeight: 44, '& .MuiTab-root': { minHeight: 44, textTransform: 'none', fontWeight: 600, fontSize: 14, px: 1.75 } }}>
+          {tabs.map((t) => (
+            <Tab key={t.href} value={t.href} component={Link} href={t.href}
+              label={t.badgeKey && badges[t.badgeKey] > 0 ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                  {t.label}
+                  <Chip label={badges[t.badgeKey]} size="small" color="primary" sx={{ height: 18, fontSize: 10.5, fontWeight: 800 }} />
+                </Box>
+              ) : t.label} />
+          ))}
+        </Tabs>
+      ) : <Box sx={{ flexGrow: 1 }} />}
+      {actions.length > 0 && (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', py: 0.75 }}>
+          {actions.map((a, i) => (
+            <Button key={a.href} component={Link} href={a.href} size="small" startIcon={a.icon}
+              variant={i === actions.length - 1 ? 'contained' : 'outlined'} sx={{ whiteSpace: 'nowrap' }}>
+              {a.label}
+            </Button>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
 }
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -160,10 +105,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const isTeacher = user?.role === 'TEACHER';
   const isAdmin = user?.role === 'ADMIN';
-  const navItems: NavItem[] = isTeacher
-    ? [...teacherNavItems, ...accountNavItems]
-    : [...studentNavItems, ...(isAdmin ? adminNavItems : []), ...accountNavItems];
-  const currentHref = activeHref(pathname, navItems);
+  const mainSections: NavSection[] = isTeacher ? teacherSections : studentSections;
+  const allSections = isAdmin ? [...mainSections, adminSection] : mainSections;
+  const { section: currentSection, tab: currentTab } = locate(pathname, allSections);
 
   const { data: gamiData } = useQuery({
     queryKey: ['gamification'],
@@ -179,6 +123,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   });
 
   const unreadCount = notifData?.filter((n: any) => !n.isRead).length || 0;
+
+  // Plano atual (cartão no rodapé do menu)
+  const { data: planName } = useQuery({
+    queryKey: ['billing', 'me', 'plan-name'],
+    queryFn: () => billingApi.me().then((r) => (r.data.data?.plan?.name as string) || 'Gratuito'),
+    staleTime: 1000 * 60 * 5,
+    enabled: !isTeacher,
+  });
 
   // Quantas questões vencem hoje na revisão espaçada (badge no menu)
   const { data: reviewDueCount = 0 } = useQuery({
@@ -198,83 +150,81 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     enabled: isAdmin,
   });
   const badges: Record<string, number> = { review: reviewDueCount, reports: openReports };
+  // Seção com alguma aba pendente ganha um ponto no menu
+  const sectionHasBadge = (s: NavSection) => (s.tabs || []).some((t) => t.badgeKey && badges[t.badgeKey] > 0);
   const desktopShift = open && !isMobile;
   const gold = theme.palette.primary.main;
   const activeText = isDark ? gold : theme.palette.primary.dark;
 
+  const navButton = (s: NavSection) => {
+    const isActive = currentSection?.key === s.key;
+    return (
+      <ListItem key={s.key} disablePadding sx={{ mb: 0.25 }}>
+        <ListItemButton
+          component={Link}
+          href={s.href}
+          selected={isActive}
+          onClick={() => setMobileOpen(false)}
+          sx={{
+            borderRadius: 2.5,
+            minHeight: 42,
+            '&.Mui-selected': {
+              bgcolor: alpha(gold, isDark ? 0.12 : 0.16),
+              color: activeText,
+              '& .MuiListItemIcon-root': { color: activeText },
+              '&:hover': { bgcolor: alpha(gold, isDark ? 0.18 : 0.22) },
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 36, color: isActive ? activeText : 'text.secondary', '& svg': { fontSize: 20 } }}>
+            {s.icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={s.label}
+            primaryTypographyProps={{ fontSize: 14, fontWeight: isActive ? 700 : 500, noWrap: true }}
+          />
+          {sectionHasBadge(s) && (
+            <Box component="span" aria-label="Pendências" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main', flexShrink: 0 }} />
+          )}
+        </ListItemButton>
+      </ListItem>
+    );
+  };
+
   const drawerContent = (
     <>
       <Toolbar sx={{ px: 2.5, gap: 1 }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', minWidth: 0 }}>
+        <Link href={isTeacher ? '/professor' : '/dashboard'} style={{ textDecoration: 'none', minWidth: 0 }}>
           <Logo size={34} />
         </Link>
       </Toolbar>
-      <Divider />
 
       <List sx={{ px: 1.25, py: 1, flexGrow: 1, overflowY: 'auto', overflowX: 'hidden' }}>
-        {navItems.map((item, idx) => {
-          if ('divider' in item) {
-            return (
-              <Typography
-                key={`d-${idx}`}
-                variant="overline"
-                sx={{ px: 1.5, pt: 2, pb: 0.5, color: 'text.disabled', display: 'block', fontSize: 10, lineHeight: 1.6 }}
-              >
-                {item.label}
-              </Typography>
-            );
-          }
-
-          const isActive = item.href === currentHref;
-          return (
-            <ListItem key={item.href} disablePadding sx={{ mb: 0.25 }}>
-              <ListItemButton
-                component={Link}
-                href={item.href}
-                selected={isActive}
-                onClick={() => setMobileOpen(false)}
-                sx={{
-                  borderRadius: 2,
-                  py: 0.7,
-                  position: 'relative',
-                  ...(item.highlight && !isActive ? {
-                    border: `1px solid ${alpha(gold, 0.35)}`,
-                    background: alpha(gold, isDark ? 0.06 : 0.08),
-                  } : { border: '1px solid transparent' }),
-                  '&.Mui-selected': {
-                    bgcolor: alpha(gold, isDark ? 0.12 : 0.16),
-                    color: activeText,
-                    '& .MuiListItemIcon-root': { color: activeText },
-                    '&:hover': { bgcolor: alpha(gold, isDark ? 0.18 : 0.22) },
-                    '&::before': {
-                      content: '""', position: 'absolute', left: -10, top: 8, bottom: 8,
-                      width: 4, borderRadius: 4, background: gold,
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 36, color: isActive || item.highlight ? activeText : 'text.secondary', '& svg': { fontSize: 20 } }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontSize: 14, fontWeight: isActive || item.highlight ? 600 : 500, noWrap: true }}
-                />
-                {item.badgeKey && badges[item.badgeKey] > 0 && (
-                  <Chip label={badges[item.badgeKey]} size="small" color="primary" sx={{ height: 20, fontSize: 11, fontWeight: 800, ml: 0.5 }} />
-                )}
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
+        {mainSections.map(navButton)}
+        {isAdmin && (
+          <>
+            <Divider sx={{ my: 1.25, mx: 1 }} />
+            {navButton(adminSection)}
+          </>
+        )}
       </List>
 
-      <Box sx={{ px: 2, py: 1.5, borderTop: `1px solid ${theme.palette.divider}`, textAlign: 'center' }}>
-        <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: 10, lineHeight: 1.6 }}>
-          © {new Date().getFullYear()} Rotta Concursos
-        </Typography>
-        <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: 10 }}>
-          Desenvolvido por{' '}
+      <Box sx={{ px: 1.5, pb: 1.5 }}>
+        {!isTeacher && (
+          <Box sx={{
+            border: `1px solid ${alpha(gold, 0.35)}`, bgcolor: alpha(gold, isDark ? 0.06 : 0.08),
+            borderRadius: 3, p: 1.5, mb: 1.5, display: 'flex', flexDirection: 'column', gap: 1,
+          }}>
+            <Typography variant="caption" color="text.secondary">
+              Seu plano: <strong>{planName || '…'}</strong>
+            </Typography>
+            <Button component={Link} href="/planos" size="small" variant="contained" fullWidth onClick={() => setMobileOpen(false)}>
+              Ver planos
+            </Button>
+          </Box>
+        )}
+        <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: 10, lineHeight: 1.6, textAlign: 'center' }}>
+          © {new Date().getFullYear()} Rotta Concursos · por{' '}
           <Box component="a" href="https://www.instagram.com/kauan.cleuton" target="_blank" rel="noopener noreferrer"
             sx={{ color: 'text.disabled', textDecoration: 'underline', '&:hover': { color: 'primary.main' } }}>
             Kauan Cleuton
@@ -389,7 +339,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           open={open}
           onClose={() => setOpen(false)}
           ModalProps={{ keepMounted: true }}
-          sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box', bgcolor: 'background.paper' } }}
+          sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column' } }}
         >
           {drawerContent}
         </Drawer>
@@ -410,6 +360,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               bgcolor: 'background.paper',
               borderRight: `1px solid ${theme.palette.divider}`,
               overflowX: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
               transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
@@ -435,6 +387,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       >
         <Toolbar />
         <Box sx={{ p: { xs: 2, md: 3 }, flexGrow: 1 }}>
+          {currentSection && <SectionTabs section={currentSection} tab={currentTab} badges={badges} />}
           {children}
         </Box>
 

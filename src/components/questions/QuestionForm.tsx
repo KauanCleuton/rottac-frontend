@@ -359,7 +359,7 @@ export default function QuestionForm({ initial, isAdmin, submitting, submitLabel
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               {isAdmin && (
                 <FormControlLabel control={<Switch checked={v.isPublic} onChange={(e) => set('isPublic', e.target.checked)} />}
-                  label={<Typography variant="body2"><strong>Publicar no banco</strong> (visível para todos os alunos)</Typography>} />
+                  label={<Typography variant="body2"><strong>Publicar no banco</strong> (desligado: fica oculta para todos)</Typography>} />
               )}
               <FormControlLabel control={<Switch checked={v.isAnnulled} onChange={(e) => set('isAnnulled', e.target.checked)} />}
                 label={<Typography variant="body2">Anulada</Typography>} />

@@ -7,8 +7,10 @@ import {
 } from '@mui/material';
 import {
   Star, StarBorder, ChatBubbleOutline, ContentCut, CheckCircle, Cancel, Edit, Lightbulb, Draw, EventRepeat,
-  BarChart, History, Block, Update, OutlinedFlag,
+  BarChart, History, Block, Update, OutlinedFlag, DeleteOutline, VisibilityOff,
 } from '@mui/icons-material';
+import { useQueryClient } from '@tanstack/react-query';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { questionBankApi } from '@/lib/api';
@@ -121,6 +123,10 @@ export default function QuestionCard({
   const startedAt = useRef(Date.now());
   const [penActive, setPenActive] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'delete' | 'hide' | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [gone, setGone] = useState(false);
+  const qc = useQueryClient();
   const canAnnotate = mode !== 'preview';
 
   useEffect(() => { setQ(question); }, [question]);
@@ -176,20 +182,31 @@ export default function QuestionCard({
     }
   };
 
-  const retry = () => {
-    setResult(null);
-    setFeedback('');
-    setLocalSelected(null);
-    setStruck(new Set());
-    startedAt.current = Date.now();
-  };
-
   const toggleFavorite = async () => {
     try {
       const r = await questionBankApi.toggleFavorite(q.id);
       setQ((prev) => ({ ...prev, isFavorite: r.data.data.isFavorite }));
     } catch {
       toast.error('Não foi possível favoritar');
+    }
+  };
+
+  // Excluir (dono/admin) ou ocultar do banco (admin): o card some da lista na hora
+  const runConfirmAction = async () => {
+    const action = confirmAction;
+    setBusy(true);
+    try {
+      if (action === 'delete') await questionBankApi.remove(q.id);
+      else await questionBankApi.update(q.id, { isPublic: false });
+      toast.success(action === 'delete' ? 'Questão excluída' : 'Questão ocultada do banco');
+      setGone(true);
+      qc.invalidateQueries({ queryKey: ['question-bank'] });
+      qc.invalidateQueries({ queryKey: ['question-bank-filters'] });
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || 'Não foi possível concluir');
+    } finally {
+      setBusy(false);
+      setConfirmAction(null);
     }
   };
 
@@ -218,6 +235,8 @@ export default function QuestionCard({
     const pct = letter ? Math.round((n / totalAnswers) * 100) : 0;
     return pct >= 20 ? { letter, pct } : null;
   })();
+
+  if (gone) return null;
 
   return (
     <Card sx={{ overflow: 'visible' }}>
@@ -268,6 +287,21 @@ export default function QuestionCard({
                 <Tooltip title="Editar questão">
                   <IconButton size="small" component={Link} href={`/questoes/${q.id}/editar`} aria-label="Editar">
                     <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {!hideActions && isAdmin && q.isPublic && (
+                <Tooltip title="Ocultar do banco">
+                  <IconButton size="small" onClick={() => setConfirmAction('hide')} aria-label="Ocultar do banco">
+                    <VisibilityOff fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {!hideActions && (q.isOwner || isAdmin) && (
+                <Tooltip title="Excluir questão">
+                  <IconButton size="small" onClick={() => setConfirmAction('delete')} aria-label="Excluir questão"
+                    sx={{ '&:hover': { color: 'error.main' } }}>
+                    <DeleteOutline fontSize="small" />
                   </IconButton>
                 </Tooltip>
               )}
@@ -393,7 +427,6 @@ export default function QuestionCard({
               <Chip size="small" icon={<BarChart sx={{ fontSize: 15 }} />}
                 label={`${result.community.accuracy}% acertam · ${totalAnswers} resp.`} variant="outlined" />
             )}
-            <Button size="small" onClick={retry}>Refazer</Button>
           </Box>
         )}
 
@@ -457,6 +490,13 @@ export default function QuestionCard({
 
         {sending && <LinearProgress sx={{ mt: 1 }} />}
         {reportOpen && <ReportDialog questionId={q.id} open onClose={() => setReportOpen(false)} />}
+        <ConfirmDialog open={Boolean(confirmAction)} danger={confirmAction === 'delete'} loading={busy}
+          title={confirmAction === 'delete' ? 'Excluir questão?' : 'Ocultar do banco?'}
+          message={confirmAction === 'delete'
+            ? 'As respostas e os comentários desta questão também serão removidos. Essa ação não pode ser desfeita.'
+            : 'A questão deixa de aparecer para todos os alunos. Você pode republicá-la em Gerenciar Questões › Ocultas.'}
+          confirmLabel={confirmAction === 'delete' ? 'Excluir' : 'Ocultar'}
+          onConfirm={runConfirmAction} onClose={() => setConfirmAction(null)} />
       </CardContent>
     </Card>
   );

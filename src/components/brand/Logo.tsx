@@ -1,30 +1,25 @@
 'use client';
 
-import { useId } from 'react';
 import { Box, Typography } from '@mui/material';
 
-// Marca: "R" dourado cuja perna é uma rota terminando no ponto de destino (a aprovação).
+const GOLD = '#F2B705';
+
+// Marca: trilha pontilhada que termina no visto de "aprovado" (a rota até a aprovação).
+// Abaixo de 24px a trilha some e o visto engrossa, para continuar legível.
 export function LogoMark({ size = 36 }: { size?: number }) {
-  const uid = useId().replace(/:/g, '');
-  const gold = `gold-${uid}`;
-  const bg = `bg-${uid}`;
+  const small = size < 24;
   return (
-    <svg width={size} height={size} viewBox="0 0 512 512" role="img" aria-label="Rotta Concursos" style={{ flexShrink: 0, display: 'block' }}>
-      <defs>
-        <linearGradient id={gold} gradientUnits="userSpaceOnUse" x1="150" y1="100" x2="380" y2="440">
-          <stop offset="0" stopColor="#FFE38A" />
-          <stop offset="0.45" stopColor="#F2B705" />
-          <stop offset="1" stopColor="#B8860B" />
-        </linearGradient>
-        <radialGradient id={bg} cx="0.3" cy="0.2" r="0.9">
-          <stop offset="0" stopColor="#26262A" />
-          <stop offset="1" stopColor="#0A0A0B" />
-        </radialGradient>
-      </defs>
-      <rect width="512" height="512" rx="116" fill={`url(#${bg})`} />
-      <rect x="6" y="6" width="500" height="500" rx="110" fill="none" stroke="#F2B705" strokeOpacity="0.18" strokeWidth="4" />
-      <path d="M164 366V122h92a76 76 0 0 1 0 152h-92M236 274l60 68" fill="none" stroke={`url(#${gold})`} strokeWidth="54" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="348" cy="401" r="30" fill={`url(#${gold})`} />
+    <svg width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="Rotta Concursos" style={{ flexShrink: 0, display: 'block' }}>
+      <rect width="64" height="64" rx="16" fill="#1C1C1F" />
+      {small ? (
+        <path d="M16 33l11 11 22-23" fill="none" stroke={GOLD} strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+      ) : (
+        <>
+          <circle cx="10.5" cy="27" r="2.2" fill={GOLD} fillOpacity="0.45" />
+          <circle cx="15.5" cy="31" r="2.2" fill={GOLD} fillOpacity="0.7" />
+          <path d="M21 35l8.5 8.5L49 22" fill="none" stroke={GOLD} strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
+        </>
+      )}
     </svg>
   );
 }
